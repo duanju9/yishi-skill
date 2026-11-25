@@ -139,7 +139,7 @@ git clone --depth 1 https://ghproxy.net/https://github.com/duanju9/yishi-skill.g
 
 ## 分享给别人
 
-本地打开仓库里的 `share.html`，有三个版本可一键复制：完整提示词、分享文案（发群/朋友圈）、一句话版。
+把仓库下载到本地，双击 `share.html`，里有三个版本可一键复制：完整提示词、分享文案（发群/朋友圈）、一句话版。
 
 最短的推荐语就这句：
 
