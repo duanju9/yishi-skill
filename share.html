@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>奕识 · 分享页</title>
+<style>
+:root{
+  --bg:#F7F8FA; --surface:#FFFFFF; --surface2:#F1F3F7; --line:#E3E6ED;
+  --ink:#1E2430; --ink2:#59627A; --ink3:#8B93A7;
+  --blue:#2E6FD6; --blue-bg:#EAF1FC;
+  --teal:#0F8A72; --teal-bg:#E4F5F0;
+  --amber:#B87B15; --amber-bg:#FCF3E2;
+  --red:#C0392B; --red-bg:#FCEAE7;
+  --purple:#6B4FC4; --purple-bg:#F0ECFB;
+  --r:12px; --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:38px 22px 80px}
+h1{font-size:22px;font-weight:650;margin-bottom:6px}
+h2{font-size:15.5px;font-weight:650;margin-bottom:4px}
+p{font-size:13.5px;color:var(--ink2)}
+.small{font-size:12px;color:var(--ink3)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-bottom:14px}
+.badge{display:inline-block;font-size:10.5px;padding:2px 9px;border-radius:5px;font-weight:600;margin-right:6px}
+.b1{color:var(--blue);background:var(--blue-bg)}
+.b2{color:var(--teal);background:var(--teal-bg)}
+.b3{color:var(--amber);background:var(--amber-bg)}
+.note{background:var(--blue-bg);border-left:3px solid var(--blue);padding:11px 13px;border-radius:0 8px 8px 0;font-size:12.5px;color:var(--ink2);margin:12px 0}
+.note.warn{background:var(--amber-bg);border-left-color:var(--amber)}
+.note.bad{background:var(--red-bg);border-left-color:var(--red)}
+.note b{color:var(--ink)}
+pre{background:#F4F6FA;border:1px solid var(--line);border-radius:9px;padding:15px 16px;
+  font-family:ui-monospace,SFMono-Regular,Consolas,"PingFang SC",monospace;font-size:12px;line-height:1.65;
+  white-space:pre-wrap;word-break:break-word;color:var(--ink);margin:10px 0;max-height:520px;overflow-y:auto}
+.btn{font-family:var(--font);font-size:13px;font-weight:600;padding:9px 18px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);transition:.15s}
+.btn:hover{border-color:var(--blue);color:var(--blue)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.primary:hover{opacity:.9;color:#fff}
+.btn.ok{background:var(--teal);border-color:var(--teal);color:#fff}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px}
+ul{list-style:none;font-size:13px;color:var(--ink2)}
+ul li{padding:5px 0 5px 18px;position:relative}
+ul li:before{content:"·";position:absolute;left:6px;color:var(--ink3);font-weight:700}
+code{background:var(--surface2);padding:1.5px 6px;border-radius:4px;font-family:ui-monospace,Consolas,monospace;font-size:12px}
+footer{text-align:center;font-size:11.5px;color:var(--ink3);padding:20px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="card" style="background:linear-gradient(180deg,#FFF,#FAFBFD)">
+  <h1>奕识 · 分享页</h1>
+  <p class="small" style="margin-top:6px">把一个开源工具发给别人，让对方两分钟得到一份自己的职业决策报告。所有内容本地运行，数据不上传。</p>
+  <div class="row" style="margin-top:12px">
+    <a href="https://github.com/duanju9/yishi-skill" target="_blank"><button class="btn primary">打开 GitHub 仓库</button></a>
+  </div>
+</div>
+
+<div class="card">
+  <h2><span class="badge b1">版本 A</span>完整提示词（粘给 AI 用）</h2>
+  <p class="small" style="margin-bottom:4px">对方把这段整个复制，粘给能执行命令的 AI，什么都不用改。</p>
+  <div class="note warn"><b>前提：</b>对方用的 AI 必须能执行本地命令（Claude Code / Cursor / WorkBuddy / Codex / Codex CLI）。纯网页版 ChatGPT、豆包、Kimi 跑不了——它们读不到本地文件。</div>
+  <pre id="p1">帮我做一次职业方向分析，用这个开源工具：
+https://github.com/duanju9/yishi-skill
+
+按顺序执行，每步做完再进下一步：
+
+1. 克隆仓库到当前目录下的 yishi-skill 文件夹：
+   git clone --depth 1 https://github.com/duanju9/yishi-skill.git yishi-skill
+   如果连不上 GitHub，把地址换成 ghproxy.net 前缀版本再试：
+   git clone --depth 1 https://ghproxy.net/https://github.com/duanju9/yishi-skill.git yishi-skill
+
+2. 检查环境：python --version 需要 3.9 以上。
+   如果没有 Python 或版本太低，先告诉我怎么装，不要假装跑通。
+
+3. 读 yishi-skill/SKILL.md，严格按里面的 5 步工作流执行，不要自创流程。
+
+4. 采集前先跟我确认：要读哪些目录、只读我发的消息、会脱敏、不联网。我同意后再跑。
+
+5. 采集完，把终端输出的「会话数 / 消息数 / 时间跨度 / 委托类型前三 / 领域前三」
+   念给我确认，我看一眼再说下一步。
+
+6. 建模前问我：心里有没有预设方向（产品 / 咨询 / 投研 / 内容 / 技术 / 战略 / 创业）。
+
+7. 生成报告 HTML 后打开给我看，然后用文字讲四件事：
+   - 最强的证据是哪一条（带次数和原文）
+   - 最反直觉的发现是什么（我的自述和行为有没有冲突）
+   - 我的预设方向排第几、在哪个象限
+   - 这份报告的三条边界
+
+硬性约束，任何情况都不要违反：
+- 不许跳过采集自己编分数，所有结论必须来自我的语料
+- 不许上传我的任何数据，不许索取我的账号密码
+- 采集到的消息少于 30 条，直接告诉我样本不足，不要硬凑结论</pre>
+  <div class="row"><button class="btn primary" onclick="cp(this,'p1')">复制完整提示词</button><span class="small" id="t1"></span></div>
+</div>
+
+<div class="card">
+  <h2><span class="badge b2">版本 B</span>分享文案（发群 / 朋友圈用）</h2>
+  <p class="small" style="margin-bottom:4px">短，有钩子，不吹。适合直接发出去。</p>
+  <pre id="p2">想搞清楚自己该往哪走，别再做测评了——问卷问的是"你觉得自己是什么人"，你填的时候已经在演了。
+
+试试这个开源工具（本地跑，数据不上传）：
+https://github.com/duanju9/yishi-skill
+
+它换了个入口：读你平时让 AI 帮你干的事。你反复在拆什么、写什么、查什么，这些骗不了人——没人会连续三个月委托自己讨厌的事。
+
+把仓库丢给 Claude Code / Cursor / WorkBuddy，让它自己装自己跑，两分钟出一份报告：
+· 你反复在做的事，哪些是能力、哪些只是焦虑
+· 7 条职业路径的加权排序，为什么产品对你是"好进但内耗"
+· 你和哪位历史人物的决策结构最像（比的是取舍，不是性格）
+· 现在该读哪本书，以及哪几本现在别读
+
+零依赖，全程本地，Python 3.9+ 就够，不装任何包。</pre>
+  <div class="row"><button class="btn primary" onclick="cp(this,'p2')">复制分享文案</button><span class="small" id="t2"></span></div>
+</div>
+
+<div class="card">
+  <h2><span class="badge b3">版本 C</span>一句话版本</h2>
+  <p class="small" style="margin-bottom:4px">聊天里随口推荐时用。</p>
+  <pre id="p3">发现一个挺狠的开源工具，不问你觉得你是谁，只读你平时让 AI 帮你做什么，然后给你 7 条职业路径排个序，连"哪条好进但会内耗"都标出来。本地跑不上传：https://github.com/duanju9/yishi-skill</pre>
+  <div class="row"><button class="btn primary" onclick="cp(this,'p3')">复制一句话</button><span class="small" id="t3"></span></div>
+</div>
+
+<div class="card">
+  <h2>发之前先确认对方能不能用</h2>
+  <ul>
+    <li><b>AI 要能跑命令</b>：Claude Code / Cursor / WorkBuddy / Codex 可以；网页版 ChatGPT、豆包、Kimi 不行（读不到本地文件）</li>
+    <li><b>要有 Python 3.9+</b>：Windows 用户多半没装，让他的 AI 帮忙装一个就行，不装任何第三方包</li>
+    <li><b>要有会话记录</b>：他的 AI 里得有过一些使用历史。全新用户只能得到"样本不足"——这是设计如此，不是坏了</li>
+    <li><b>隐私</b>：脚本只读本地会话，默认打码邮箱手机密钥，无网络上行。但报告里有他的心理侧写，提醒他别公开分享</li>
+  </ul>
+  <div class="note bad" style="margin-bottom:0"><b>别这样说：</b>"测一下你适合什么工作"会把期待抬到它做不到的高度。它给的是"合不合手、够不够得着"的排序，不是命运判决书。说清楚这一点，收到的人反而更信。</div>
+</div>
+
+<footer>奕识 · 三维决策系统　|　https://github.com/duanju9/yishi-skill</footer>
+
+</div>
+<script>
+function cp(btn, id){
+  const el = document.getElementById(id);
+  const text = el.innerText;
+  const done = () => {
+    const old = btn.textContent;
+    btn.textContent = '已复制';
+    btn.classList.add('ok');
+    const tip = document.getElementById('t' + id.slice(1));
+    if (tip) tip.textContent = '粘贴即可，无需改动';
+    setTimeout(()=>{ btn.textContent = old; btn.classList.remove('ok'); if(tip) tip.textContent=''; }, 2000);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(()=>fallback(text, done));
+  } else {
+    fallback(text, done);
+  }
+}
+function fallback(text, done){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); done(); } catch(e){}
+  document.body.removeChild(ta);
+}
+</script>
+</body>
+</html>
