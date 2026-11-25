@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#F7F8FA">
+<title>奕识 · 现场取证</title>
+<style>
+:root{
+  --bg:#F7F8FA; --surface:#FFFFFF; --surface2:#F1F3F7; --line:#E3E6ED;
+  --ink:#1E2430; --ink2:#59627A; --ink3:#8B93A7;
+  --blue:#2E6FD6; --blue-bg:#EAF1FC;
+  --teal:#0F8A72; --teal-bg:#E4F5F0;
+  --amber:#B87B15; --amber-bg:#FCF3E2;
+  --red:#C0392B; --red-bg:#FCEAE7;
+  --purple:#6B4FC4; --purple-bg:#F0ECFB;
+  --r:12px; --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:640px;margin:0 auto;padding:20px 18px 90px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-bottom:14px}
+h1{font-size:21px;font-weight:650;letter-spacing:.3px;margin-bottom:6px}
+h2{font-size:16.5px;font-weight:650;margin-bottom:4px}
+h3{font-size:14px;font-weight:650;margin-bottom:8px}
+p{font-size:14px;color:var(--ink2)}
+.small{font-size:12.5px;color:var(--ink3);line-height:1.6}
+.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px}
+.note{background:var(--blue-bg);border-left:3px solid var(--blue);padding:11px 13px;border-radius:0 8px 8px 0;font-size:13px;color:var(--ink2);margin:12px 0}
+.note.warn{background:var(--amber-bg);border-left-color:var(--amber)}
+.note.bad{background:var(--red-bg);border-left-color:var(--red)}
+.note.good{background:var(--teal-bg);border-left-color:var(--teal)}
+.note b{color:var(--ink)}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:5px;background:var(--surface2);color:var(--ink2);margin-right:5px}
+.tag.b{color:var(--blue);background:var(--blue-bg)}
+.tag.t{color:var(--teal);background:var(--teal-bg)}
+.tag.a{color:var(--amber);background:var(--amber-bg)}
+.tag.r{color:var(--red);background:var(--red-bg)}
+.tag.p{color:var(--purple);background:var(--purple-bg)}
+button{font-family:var(--font);font-size:15px;font-weight:500;padding:13px 20px;border:1px solid var(--line);
+  background:var(--surface);color:var(--ink);border-radius:10px;cursor:pointer;transition:.15s;width:100%;text-align:left}
+button:active{transform:scale(.985)}
+button.primary{background:var(--blue);border-color:var(--blue);color:#fff;text-align:center;font-weight:600}
+button:disabled{opacity:.4}
+.opt{display:block;margin-bottom:10px;padding:15px 16px;line-height:1.6}
+.opt:hover{border-color:var(--blue)}
+.opt .l{font-size:15px;font-weight:600;color:var(--ink)}
+.opt .d{font-size:13px;color:var(--ink2);margin-top:4px}
+.opt .c{font-size:12px;color:var(--amber);margin-top:6px}
+.qctx{font-size:14.5px;color:var(--ink);line-height:1.75;margin-bottom:6px}
+.progress{height:3px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-bottom:16px}
+.progress i{display:block;height:100%;background:var(--blue);transition:width .25s}
+.qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:12px;color:var(--ink3)}
+.timer{font-variant-numeric:tabular-nums;font-weight:600}
+.bar{height:7px;border-radius:4px;background:var(--surface2);overflow:hidden;margin-top:5px}
+.bar i{display:block;height:100%;border-radius:4px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;color:var(--ink3);font-weight:600}
+tr:last-child td{border-bottom:none}
+.evi{padding:12px 0;border-bottom:1px solid var(--line)}
+.evi:last-child{border-bottom:none}
+.evi .t{font-size:14px;font-weight:600;margin-bottom:3px}
+.evi .d{font-size:12.5px;color:var(--ink2)}
+.seg{display:flex;gap:6px;margin:8px 0}
+.seg button{flex:1;text-align:center;padding:10px 6px;font-size:13px;font-weight:600}
+.seg button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.fig{border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px}
+.node{border-left:2px solid var(--line);padding:2px 0 2px 10px;margin:8px 0;font-size:12.5px;color:var(--ink2)}
+.node b{color:var(--ink)}
+.book{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.book:last-child{border-bottom:none}
+.book .idx{flex:0 0 24px;height:24px;border-radius:6px;background:var(--teal-bg);color:var(--teal);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.book.skip .idx{background:var(--surface2);color:var(--ink3)}
+.radar-wrap{text-align:center}
+.sec-h{display:flex;align-items:center;gap:9px;margin-bottom:3px}
+.sec-n{flex:0 0 24px;height:24px;border-radius:7px;background:var(--blue-bg);color:var(--blue);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sec-sub{font-size:12.5px;color:var(--ink3);margin:0 0 14px 33px}
+footer{text-align:center;font-size:12px;color:var(--ink3);padding:20px 0 0}
+.fixedbar{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px 18px calc(10px + env(safe-area-inset-bottom))}
+.fixedbar .in{max-width:640px;margin:0 auto;display:flex;gap:10px}
+.fixedbar button{flex:1}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ==================================================================
+   奕识 · 现场取证
+   不读任何历史数据：18 个限时两难情境，用选择与答题时长产生行为证据。
+   全部在浏览器内计算，无网络请求，关页即失（可手动导出 JSON）。
+   ================================================================== */
+
+const DIMS = ['analyze','build','express','explore','decide','connect','operate','create','trade','focus'];
+const DL = {analyze:'拆解分析',build:'动手建构',express:'表达输出',explore:'信息探究',decide:'独立决断',
+  connect:'协调连接',operate:'秩序执行',create:'原创生成',trade:'商业交换',focus:'长期专注'};
+const DIM_W = {analyze:1,build:1,express:1,explore:1,create:1,decide:.5,connect:.6,trade:.55,operate:.45,focus:.6};
+
+/* ---------- 题库：18 题，每题两个选项都有代价 ---------- */
+const QS = [
+ {ctx:'周五下午四点。客户的季度数据口径对不上，同时产品约你开下季度排期会。你只有一段时间。',
+  q:'你先做哪件事？',
+  a:{l:'把数据口径核到能对上为止',d:'逐层回溯来源，今晚可能要走',c:'排期会错过，产品会觉得你不配合',dims:{analyze:2,focus:1}},
+  b:{l:'去开会，把排期定下来',d:'先满足多方诉求，数据明天再说',c:'口径问题过夜，可能埋雷',dims:{connect:2,decide:1}}},
+
+ {ctx:'老板明早要看一份行业判断，你只有一个下午。',
+  q:'你先做哪件事？',
+  a:{l:'把三家的财报和竞争梯队全拉齐',d:'先建结构，再下结论',c:'来不及时，明早可能交不出完整结论',dims:{analyze:2,explore:1,decide:-1}},
+  b:{l:'先给一个明确判断，细节后补',d:'先把观点立住，边讲边补',c:'判断可能建立在薄证据上',dims:{decide:2,express:1,analyze:-1}}},
+
+ {ctx:'一个方向你看了很多内容，很有意思；另一个方向你手上有个具体的小项目可以做。',
+  q:'周末给哪个？',
+  a:{l:'再研究透一点',d:'多看几份一手材料，形成完整图景',c:'周末结束还是没有可展示的产出',dims:{explore:2,analyze:1,build:-1}},
+  b:{l:'动手把小项目做出来',d:'哪怕粗糙，先有个能跑的东西',c:'认知没想透，可能白做',dims:{build:2,decide:1,explore:-1}}},
+
+ {ctx:'一个机会摆在面前，信息只到六成，窗口期两周。',
+  q:'你怎么决定？',
+  a:{l:'再补信息，到八成再动',d:'宁可慢，不能糊里糊涂进去',c:'窗口可能关闭，机会归零',dims:{explore:1,analyze:2}},
+  b:{l:'现在就下注，边做边校准',d:'用行动换信息，不靠想',c:'可能踩到本可预见的坑',dims:{decide:2,trade:1}}},
+
+ {ctx:'你要向一个不懂技术的人解释一个复杂方案，对方只有十分钟。',
+  q:'你怎么做？',
+  a:{l:'画一张结构图，从底层讲起',d:'让他真正理解，不是记住',c:'十分钟讲不完，对方走神',dims:{analyze:2,express:1}},
+  b:{l:'直接给结论和三个要点',d:'先让他能做决定，细节另说',c:'他可能理解偏差，后面返工',dims:{express:2,decide:1}}},
+
+ {ctx:'你写完一份分析，发现有个数据可能有问题，但改它会推翻你已写好的结论。',
+  q:'你怎么办？',
+  a:{l:'停下来重核，哪怕结论翻转',d:'先保证不被证伪',c:'前期工作作废，交付延期',dims:{analyze:2,focus:1}},
+  b:{l:'标注存疑，按现有结论先交',d:'保住节奏，风险显式化',c:'错误可能进入下游决策',dims:{decide:2,operate:1}}},
+
+ {ctx:'一个行业报告，你可以任选一个角度深挖。',
+  q:'你选哪个？',
+  a:{l:'全景扫描：所有玩家、梯队、份额',d:'不漏掉任何一个',c:'时间很紧，每家都只能浅尝',dims:{explore:2,operate:1}},
+  b:{l:'挑两家最反常的挖到底',d:'从异常点找结构性机会',c:'可能漏掉主流玩家的基本盘',dims:{analyze:2,create:1}}},
+
+ {ctx:'同一件事，可以自己做完，也可以拉三个人一起做（你来协调）。',
+  q:'你选哪种？',
+  a:{l:'自己做完，质量可控',d:'不用等别人，节奏在我',c:'规模上不去，视野受限',dims:{build:2,focus:1,connect:-1}},
+  b:{l:'拉团队，把事做大',d:'借别人的能力',c:'大量时间花在沟通和推动上',dims:{connect:2,operate:1,build:-1}}},
+
+ {ctx:'你有半年空窗期。',
+  q:'你怎么安排？',
+  a:{l:'做一件要半年才看到结果的事',d:'比如搭一个完整体系',c:'中间没有任何反馈，容易怀疑自己',dims:{focus:2,analyze:1}},
+  b:{l:'连做三件一个月能出结果的事',d:'快速积累可见成果',c:'每件都浅，难以形成壁垒',dims:{build:1,express:1,trade:1}}},
+
+ {ctx:'一个岗位网上说得很热闹，你没实际接触过。同时有个前辈约你聊他的真实工作。',
+  q:'你先做哪件？',
+  a:{l:'先找一手的人聊，问清坑在哪',d:'不靠描述下判断',c:'聊完可能发现没那么好，幻想破灭',dims:{connect:2,explore:1}},
+  b:{l:'先把网上那套研究透',d:'先建立认知框架再验证',c:'可能被同质化内容带偏，滤镜变厚',dims:{analyze:1,explore:2}}},
+
+ {ctx:'领导让你清一份三年没人碰过的脏数据，同时有个没做过的功能可以试。',
+  q:'你接哪个？',
+  a:{l:'清数据，把口径一条条对齐',d:'做完就有一个干净的基础',c:'耗时且没人看见，功劳难算',dims:{operate:2,focus:1}},
+  b:{l:'去做那个新功能',d:'能学到东西，也有产出可展示',c:'脏数据继续烂着，后面还得有人清',dims:{create:2,build:1}}},
+
+ {ctx:'客户要一个你明确不同意的方案，明天就要上线。',
+  q:'你怎么办？',
+  a:{l:'当场说不行，并给出替代方案',d:'把风险摊开讲清楚',c:'客户可能觉得你不配合，关系变僵',dims:{decide:2,analyze:1,connect:-1}},
+  b:{l:'先按他的做，之后再找机会修正',d:'先保住推进节奏',c:'错误方案可能一路错到底',dims:{connect:2,operate:1,decide:-1}}},
+
+ {ctx:'一个能赚钱的机会来了，但要你放下手上做了三个月的项目。',
+  q:'你怎么办？',
+  a:{l:'放下旧项目，转去抓这个机会',d:'机会窗口错过就没了',c:'旧项目半途而废，前期投入沉没',dims:{trade:2,decide:1}},
+  b:{l:'把手上项目做完再说',d:'先有始有终',c:'可能错过窗口，机会成本不小',dims:{focus:2,operate:1}}},
+
+ {ctx:'汇报到一半，老板打断你："直接说结论。"',
+  q:'你怎么反应？',
+  a:{l:'立刻收成三句话，把判断说清',d:'他要的是决策依据，不是过程',c:'逻辑链没展开，他可能误判',dims:{express:2,decide:1,analyze:-1}},
+  b:{l:'坚持把逻辑讲完，再给结论',d:'不然他理解不了为什么',c:'老板不耐烦，你被贴上"绕"的标签',dims:{analyze:2,focus:1,express:-1}}},
+
+ {ctx:'你交出去的分析被同事当众质疑"数据是错的"。',
+  q:'你怎么办？',
+  a:{l:'当场翻出原始数据逐条对',d:'当着所有人把事实摆平',c:'场面容易僵，关系可能受损',dims:{analyze:2,focus:1}},
+  b:{l:'说会后核实，先让会议往下走',d:'不打断议程，私下解决',c:'当场显得心虚，质疑可能扩散',dims:{connect:1,decide:1,operate:1}}},
+
+ {ctx:'一个陌生领域，你要两周内成为能和内行对话的人。',
+  q:'你选哪条路？',
+  a:{l:'找三本经典通读，建立框架',d:'先把地图铺开',c:'两周可能只读到一半，且偏理论',dims:{explore:2,focus:1}},
+  b:{l:'找一个人聊两小时，问最关键的问题',d:'用别人的经验压缩时间',c:'可能被对方视角限制，形成偏见',dims:{connect:2,explore:1}}},
+
+ {ctx:'你有个想法，写成文章发出去可能被同行骂，也可能被看见。',
+  q:'你发不发？',
+  a:{l:'发，骂了再改',d:'公开才能拿到真实反馈',c:'可能留下把柄，影响专业形象',dims:{express:2,create:1,focus:-1}},
+  b:{l:'再打磨两个月，等到没漏洞再发',d:'宁可慢，要发就发得住',c:'热度过了，想法可能被别人先发',dims:{analyze:1,focus:2,express:-1}}},
+
+ {ctx:'两个 offer：一个大平台的固定岗，一个小团队什么都要干。',
+  q:'你选哪个？',
+  a:{l:'大平台，先把一件事做精',d:'体系成熟，能学到规范',c:'可能长期只做一小块，看不到全局',dims:{operate:1,connect:1,decide:1,focus:1}},
+  b:{l:'小团队，什么都碰一遍',d:'成长快，边界不清但机会多',c:'没人带，可能一直在补窟窿',dims:{build:2,create:1,decide:1}}}
+];
+
+/* ---------- 岗位库（与 assets/library.json 同源） ---------- */
+const ROLES = [
+ {id:'research',name:'产业研究 / 投研',demand:{analyze:95,build:25,express:55,explore:70,decide:75,connect:35,operate:40,create:30,trade:60,focus:90},
+  work:'读财报与行业数据，建模型，写判断，错了会被市场直接打脸',cost:'长期独处面对数据；结论无人喝彩；口径错一次要重来',open:66},
+ {id:'content',name:'财经内容 / 独立研究',demand:{analyze:80,build:20,express:95,explore:65,decide:55,connect:50,operate:45,create:75,trade:40,focus:85},
+  work:'把复杂问题拆到普通人能懂，持续产出，自担选题风险',cost:'收入前期极不稳定；选题失败无人兜底',open:84},
+ {id:'product',name:'产品经理',demand:{analyze:55,build:45,express:65,explore:60,decide:80,connect:85,operate:70,create:65,trade:50,focus:45},
+  work:'定义做什么不做什么，协调研发设计运营把事推上线，为结果负责但无直接指挥权',cost:'大部分时间在沟通对齐而非思考；决策常被资源与老板意志覆盖',open:74},
+ {id:'consulting',name:'管理咨询',demand:{analyze:70,build:20,express:85,explore:70,decide:85,connect:80,operate:60,create:45,trade:55,focus:40},
+  work:'在极短时间内形成可讲的观点，说服客户，交付结构化报告',cost:'长期出差与高压；必须快速给出确定性',open:41},
+ {id:'engineering',name:'技术研发 / AI 应用',demand:{analyze:60,build:95,express:35,explore:70,decide:55,connect:35,operate:55,create:60,trade:20,focus:85},
+  work:'把方案落成能跑的系统，处理边界、性能与故障',cost:'长期与细节搏斗；成果常被当作理所当然',open:71},
+ {id:'strategy',name:'战略 / 商业分析',demand:{analyze:85,build:25,express:70,explore:75,decide:85,connect:70,operate:55,create:50,trade:65,focus:60},
+  work:'在组织内部做研究，给决策层提供选项与推演',cost:'研究成果常不被采纳；离业务远，成就感延迟',open:59},
+ {id:'founder',name:'独立开发 / 创业',demand:{analyze:60,build:70,express:65,explore:60,decide:90,connect:65,operate:75,create:80,trade:85,focus:70},
+  work:'自己找方向、做产品、找客户、收钱，所有环节都要过手',cost:'无稳定收入与反馈；失败成本全自负；孤独',open:75}
+];
+
+const FIGURES = [
+ {name:'曾国藩',era:'晚清',line:'在无法取胜的局面里，用笨办法把可控的部分做到位',
+  dims:['focus','operate','analyze'],fit:'你在做一件短期没有反馈、只能靠日拱一卒的事',
+  not:'他的约束来自皇权体系，你的约束来自市场与组织；他的"笨"有明确终点，你的终点要自己定义',
+  nodes:[{s:'组建湘军',c:'无兵无饷无信任',k:'扎硬寨打呆仗，不速战求功',p:'放弃快速成名，屡战屡败两次投水'},
+         {s:'天京之后',c:'功高震主',k:'自削兵权，全身而退',p:'裁掉自己一手带出的队伍'}]},
+ {name:'王阳明',era:'明',line:'在既有路径全部失效时，自己重建一套可用的判断标准',
+  dims:['decide','create','focus'],fit:'你卡在"学历/专业/现有路径都对不上我想做的事"',
+  not:'他的反叛是在科举体系内被逼出来的，你若没有共同体压力，容易把"自建体系"变成拒绝学习的借口',
+  nodes:[{s:'格竹失败',c:'正统学说格不出结果',k:'要求"知"必须能行',p:'长期自我怀疑与身体损耗'},
+         {s:'龙场悟道',c:'被贬蛮荒，无书无师',k:'在最差环境里仍要思考',p:'数年被主流遗忘'}]},
+ {name:'张謇',era:'清末民初',line:'在最体面的位置上，主动跳进最不体面的实干里',
+  dims:['decide','trade','build'],fit:'你想从"分析别人"转向"自己下场做"',
+  not:'他有一个明确的地域共同体（南通）承载抱负，你的"南通"在哪里要先想清楚',
+  nodes:[{s:'状元及第',c:'已到科举顶点',k:'判断实业才是出路',p:'被同僚视为自降身份'},
+         {s:'创办纱厂',c:'无工业经验无资本',k:'不让官股干预经营',p:'四处借债，几度濒临破产'}]},
+ {name:'查理·芒格',era:'20-21世纪',line:'用多学科模型和逆向思考，避开明显会输的地方',
+  dims:['analyze','explore','decide'],fit:'你擅长拆解与交叉验证，但容易因信息过载迟迟不动手',
+  not:'他有几十年可等待的资本与极好的搭档，你的试错窗口远小于他；"逆向思考"不能替代"先上场"',
+  nodes:[{s:'早年破产',c:'失子、离婚、财务归零',k:'要自己掌控结果的意志',p:'数年高压与不确定'},
+         {s:'放弃律师执业',c:'按小时收费无法积累复利',k:'对复利结构的判断',p:'放弃稳定现金流'}]},
+ {name:'司马迁',era:'西汉',line:'用一件需要几十年的事，压过当下的羞辱',
+  dims:['focus','express','operate'],fit:'你正在做一件需要几年才有结果的事，中间不断怀疑值不值',
+  not:'他面对的是生死与尊严的极端选择，日常的"坚持一下"不能类比；别用他的悲壮为普通拖延赋予意义',
+  nodes:[{s:'李陵之祸',c:'面临死刑或宫刑',k:'书必须写完',p:'终身耻辱，被同侪轻视'},
+         {s:'成书之后',c:'书成但不敢公开',k:'藏之名山，留给后世',p:'生前几乎无人知晓'}]}
+];
+
+const BOOKS = [
+ {t:'穷查理宝典',a:'芒格',q:'如何用少数可靠模型替代大量零散知识？',w:'explore',now:1,skip:''},
+ {t:'反脆弱',a:'塔勒布',q:'如何让波动成为收益来源？',w:'trade',now:1,skip:''},
+ {t:'沉思录',a:'马可·奥勒留',q:'无法改变处境时，如何保持行动能力？',w:'focus',now:1,skip:''},
+ {t:'深度工作',a:'Cal Newport',q:'如何保留长时间思考？',w:'analyze',now:1,skip:''},
+ {t:'跨能致胜',a:'David Epstein',q:'晚起步、跨领域的人靠什么赢？',w:'create',now:1,skip:''},
+ {t:'Show Your Work',a:'Austin Kleon',q:'如何让别人看到我在做什么？',w:'express',now:1,skip:''},
+ {t:'思考，快与慢',a:'卡尼曼',q:'我的直觉在哪些场合系统性出错？',w:'analyze',now:0,skip:'你正在焦虑期，这本书会让你对所有判断产生怀疑'},
+ {t:'曾国藩（传记）',a:'多种版本',q:'没有天赋优势的人靠什么把事做成？',w:'operate',now:0,skip:'你想找"如何快速成功"时，这本书恰好相反'},
+ {t:'史记（选读）',a:'司马迁',q:'人在极端约束下如何选择？',w:'focus',now:0,skip:'你处于低谷期，读列传容易把悲情当成意义'}
+];
+
+/* ---------- 状态 ---------- */
+const LS_KEY = 'yishi_quiz_v1';
+let S = {idx:0, ans:[], t0:0, started:false};
+
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify({idx:S.idx,ans:S.ans})); }catch(e){} }
+function load(){ try{ const r=localStorage.getItem(LS_KEY); if(r){const o=JSON.parse(r); if(o.ans&&o.ans.length){S.idx=o.idx;S.ans=o.ans;return true}} }catch(e){} return false; }
+function reset(){ try{localStorage.removeItem(LS_KEY)}catch(e){} S={idx:0,ans:[],t0:0,started:false}; render(); }
+
+/* ---------- 渲染：首页 ---------- */
+function renderHome(){
+  const el = document.getElementById('app');
+  const resumed = S.ans.length > 0;
+  el.innerHTML = `
+  <div class="card">
+    <h1>奕识 · 现场取证</h1>
+    <p class="small" style="margin-top:6px">不需要上传任何文件，不读取任何历史记录。${QS.length} 个两难情境，每个都必须二选一，两个选项都有代价。</p>
+    <div class="note" style="margin-top:14px"><b>为什么要限时：</b>问卷里人可以填"理想中的自己"，但在压力下强行二选一时，选的是本能。你犹豫了多久，系统也会记下来——那才是真正的纠结点。</div>
+    <div class="note warn"><b>手机上也能用。</b>全程在本机浏览器计算，不上传、不联网，关掉页面数据就没了（想留就点最后的导出）。</div>
+    ${resumed ? `<div class="note good">检测到上次答了 ${S.ans.length} 题，可以继续。</div>` : ''}
+    <div style="margin-top:16px">
+      <button class="primary" onclick="startQuiz(${resumed ? 'true' : 'false'})">${resumed ? '继续作答' : '开始'}（约 5 分钟）</button>
+    </div>
+    ${resumed ? `<div style="margin-top:8px"><button onclick="reset()">重新开始</button></div>` : ''}
+    <p class="small" style="margin-top:16px">想要更准的结论？回到电脑上跑完整版：读你本机的真实会话记录，覆盖半年的行为轨迹。本页是零门槛版本——没有历史数据也能给你一个方向。</p>
+  </div>`;
+}
+
+function startQuiz(resume){
+  if (!resume) { S = {idx:0, ans:[], t0:0, started:true}; }
+  else S.started = true;
+  if (S.idx >= QS.length) S.idx = 0;
+  S.t0 = Date.now();
+  renderQuestion();
+}
+
+/* ---------- 渲染：答题 ---------- */
+function renderQuestion(){
+  const i = S.idx;
+  if (i >= QS.length) { renderReport(); return; }
+  const q = QS[i];
+  const el = document.getElementById('app');
+  el.innerHTML = `
+  <div class="progress"><i style="width:${(i/QS.length*100).toFixed(1)}%"></i></div>
+  <div class="qmeta">
+    <span>第 ${i+1} / ${QS.length} 题</span>
+    <span class="timer" id="tm">0.0s</span>
+  </div>
+  <div class="card">
+    <div class="qctx">${esc(q.ctx)}</div>
+    <h3 style="margin:12px 0 14px">${esc(q.q)}</h3>
+    <button class="opt" onclick="pick('a')">
+      <div class="l">${esc(q.a.l)}</div>
+      <div class="d">${esc(q.a.d)}</div>
+      <div class="c">代价：${esc(q.a.c)}</div>
+    </button>
+    <button class="opt" onclick="pick('b')">
+      <div class="l">${esc(q.b.l)}</div>
+      <div class="d">${esc(q.b.d)}</div>
+      <div class="c">代价：${esc(q.b.c)}</div>
+    </button>
+    <p class="small" style="margin-top:6px">两边都有代价，选你更愿意承担的那一个。</p>
+  </div>
+  <div class="fixedbar"><div class="in">
+    ${i>0?'<button onclick="back()">上一题</button>':''}
+    <button onclick="renderHome()">暂停</button>
+  </div></div>`;
+
+  S.t0 = Date.now();
+  if (window._tmr) clearInterval(window._tmr);
+  window._tmr = setInterval(()=>{
+    const n = document.getElementById('tm');
+    if (n) n.textContent = ((Date.now()-S.t0)/1000).toFixed(1)+'s';
+  }, 100);
+}
+
+function pick(k){
+  const q = QS[S.idx];
+  const ms = Date.now() - S.t0;
+  S.ans[S.idx] = {k, ms, dims:q[k].dims, label:q[k].l, ctx:q.ctx};
+  S.idx++;
+  save();
+  if (S.idx >= QS.length) { renderReport(); } else { renderQuestion(); }
+}
+
+function back(){
+  if (S.idx > 0) { S.idx--; S.ans[S.idx] = S.ans[S.idx] || null; renderQuestion(); }
+}
+
+/* ---------- 计分 ---------- */
+function scoreProfile(){
+  const sum = {}, cap = {};
+  DIMS.forEach(d=>{ sum[d]=0; cap[d]=0; });
+  QS.forEach((q,i)=>{
+    const a = S.ans[i];
+    // 该题对每个维度的最大可能偏离幅度（用于归一化，避免"没出过这题"被算成 0 分）
+    DIMS.forEach(d=>{
+      const va = (q.a.dims[d]||0), vb = (q.b.dims[d]||0);
+      const mx = Math.max(Math.abs(va), Math.abs(vb));
+      if (mx > 0) cap[d] += mx;
+    });
+    if (!a) return;
+    DIMS.forEach(d=>{ sum[d] += (a.dims[d]||0); });
+  });
+  const dims = {};
+  DIMS.forEach(d=>{
+    const c = cap[d] || 1;
+    const ratio = Math.max(-1, Math.min(1, sum[d]/c));
+    dims[d] = Math.round(Math.max(5, Math.min(95, 50 + 45*ratio)) * 10)/10;
+  });
+  return dims;
+}
+
+/* ---------- 适配分（与 score.py 同源） ---------- */
+function fitScore(dims, demand){
+  let num=0, den=0; const detail=[]; const wasted=[];
+  Object.keys(demand).forEach(d=>{
+    const need = demand[d], u = dims[d]||0, dw = DIM_W[d]||1;
+    let match, status;
+    if (u < need) { match = 100-(need-u); status='不足'; }
+    else { match = 100-(u-need)*0.55; status='充足'; }
+    if (need <= 55 && u >= 75) wasted.push(d);
+    const w = need*dw;
+    num += w*match; den += w;
+    detail.push({d, u, need, match:Math.round(match*10)/10, status});
+  });
+  let raw = den ? num/den : 0;
+  raw -= wasted.length*2.5;
+  const score = 60 + (raw-60)*1.0;   // 现场取证：全部维度都有证据，coverage=1
+  return {fit: Math.round(Math.max(0,Math.min(100,score))*10)/10, detail, wasted};
+}
+
+function quadOf(fit, social, mid){
+  const hi = fit >= mid, near = social >= 60;
+  if (hi && near) return {k:'best', label:'最优路线', adv:'做起来顺手，还有路可走，试错成本最低。优先在这里找具体机会。'};
+  if (hi && !near) return {k:'hard', label:'高潜力高难度', adv:'很适合你，但孤军奋战。先解决"谁带你进门"，而不是先证明能力。'};
+  if (!hi && near) return {k:'drain', label:'容易上手但内耗', adv:'路好走，但长期消耗底色。可做跳板，但要设明确的退出时间点。'};
+  return {k:'avoid', label:'双重劣势', adv:'既不合手也够不着。除非有非常具体的理由，不要当主选项。'};
+}
+
+/* ---------- 图表 ---------- */
+function radar(dims){
+  const keys = DIMS, cx=150, cy=148, R=100, n=keys.length;
+  const pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+Math.cos(a)*r, cy+Math.sin(a)*r];};
+  let rings='';
+  [0.25,0.5,0.75,1].forEach(k=>{
+    rings += `<polygon points="${keys.map((_,i)=>pt(i,R*k).map(v=>v.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="#E3E6ED"/>`;
+  });
+  let axes='', ticks='';
+  keys.forEach((k,i)=>{
+    const [x,y]=pt(i,R);
+    axes += `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#E3E6ED"/>`;
+    const [lx,ly]=pt(i,R+20);
+    ticks += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" font-size="10" fill="#59627A" text-anchor="middle" dominant-baseline="middle">${DL[k]}</text>`;
+  });
+  const poly = keys.map((k,i)=>pt(i,R*Math.max(.03,(dims[k]||0)/100)).map(v=>v.toFixed(1)).join(',')).join(' ');
+  return `<svg viewBox="0 0 300 300" width="290" height="290" role="img" aria-label="底色雷达图">
+    ${rings}${axes}
+    <polygon points="${poly}" fill="rgba(46,111,214,.16)" stroke="#2E6FD6" stroke-width="1.8"/>
+    ${ticks}</svg>`;
+}
+
+function scatter(roles, mid){
+  const W=560,H=340,pad=46;
+  const x0=pad,x1=W-pad,y0=pad,y1=H-pad;
+  const sx=v=>x0+(v/100)*(x1-x0), sy=v=>y1-(v/100)*(y1-y0);
+  const mx=sx(60), my=sy(mid);
+  const col={best:'#0F8A72',hard:'#2E6FD6',drain:'#B87B15',avoid:'#C0392B'};
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="四象限">`;
+  s+=`<rect x="${x0}" y="${y0}" width="${mx-x0}" height="${my-y0}" fill="#2E6FD6" opacity=".05"/>`;
+  s+=`<rect x="${mx}" y="${y0}" width="${x1-mx}" height="${my-y0}" fill="#0F8A72" opacity=".05"/>`;
+  s+=`<rect x="${x0}" y="${my}" width="${mx-x0}" height="${y1-my}" fill="#C0392B" opacity=".05"/>`;
+  s+=`<rect x="${mx}" y="${my}" width="${x1-mx}" height="${y1-my}" fill="#B87B15" opacity=".05"/>`;
+  s+=`<line x1="${mx}" y1="${y0}" x2="${mx}" y2="${y1}" stroke="#D8DCE6" stroke-dasharray="4 4"/>`;
+  s+=`<line x1="${x0}" y1="${my}" x2="${x1}" y2="${my}" stroke="#D8DCE6" stroke-dasharray="4 4"/>`;
+  [[x0+8,y0+16,'适配高·距离远','#2E6FD6','start'],[x1-8,y0+16,'适配高·距离近','#0F8A72','end'],
+   [x0+8,y1-8,'适配低·距离远','#C0392B','start'],[x1-8,y1-8,'适配低·距离近','#B87B15','end']]
+   .forEach(([x,y,t,c,a])=>{ s+=`<text x="${x}" y="${y}" font-size="10" fill="${c}" text-anchor="${a}">${t}</text>`; });
+  roles.forEach(r=>{
+    const x=sx(r.social), y=sy(r.fit), c=col[r.quad.k];
+    s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6" fill="${c}" opacity=".88"/>`;
+    s+=`<text x="${x.toFixed(1)}" y="${(y-11).toFixed(1)}" font-size="10" font-weight="600" fill="#1E2430" text-anchor="middle">${r.name.split(' ')[0]}</text>`;
+    s+=`<text x="${x.toFixed(1)}" y="${(y+18).toFixed(1)}" font-size="9.5" fill="#8B93A7" text-anchor="middle">${r.total}</text>`;
+  });
+  s+=`</svg>`;
+  return s;
+}
+
+/* ---------- 报告 ---------- */
+function renderReport(){
+  if (window._tmr) clearInterval(window._tmr);
+  const dims = scoreProfile();
+  const answered = S.ans.filter(Boolean);
+  const totalMs = answered.reduce((a,b)=>a+b.ms,0);
+  const avg = totalMs/Math.max(1,answered.length);
+  const sorted = [...answered].sort((a,b)=>b.ms-a.ms);
+  const slow = sorted.slice(0,3);
+  const fast = sorted.slice(-3).reverse();
+
+  // 岗位
+  const roles = ROLES.map(r=>{
+    const f = fitScore(dims, r.demand);
+    return {...r, fit:f.fit, detail:f.detail, wasted:f.wasted, social:r.open};
+  });
+  const mid = median(roles.map(r=>r.fit));
+  roles.forEach(r=>{ r.quad = quadOf(r.fit, r.social, mid); r.total = Math.round((r.fit*0.55 + r.social*0.45)*10)/10; });
+  roles.sort((a,b)=>b.total-a.total);
+  roles.forEach((r,i)=>r.rank=i+1);
+
+  // 人物：按维度契合
+  const figs = FIGURES.map(f=>{
+    const base = f.dims.reduce((a,d)=>a+(dims[d]||0),0)/f.dims.length;
+    // 犹豫越多，越适合"在约束下做取舍"的人物
+    const hesitation = slow.length ? slow[0].ms/1000 : 0;
+    const bonus = f.dims.includes('decide') ? Math.min(6, hesitation*0.8) : 0;
+    return {...f, score: Math.round(Math.min(100, base+bonus)*10)/10};
+  }).sort((a,b)=>b.score-a.score).slice(0,3);
+
+  // 书：按最高的三个维度
+  const topDims = Object.entries(dims).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]);
+  const books = BOOKS.map(b=>({...b, hit: b.w === topDims[0] || b.w === topDims[1] || b.w === topDims[2]}));
+  const nowBooks = books.filter(b=>b.now && b.hit).concat(books.filter(b=>b.now && !b.hit)).slice(0,3);
+  const skipBooks = books.filter(b=>!b.now).slice(0,3);
+
+  // 证据：从最慢/最快的题里生成
+  const hesit = slow.map(x=>`
+    <div class="evi"><div class="t"><span class="tag a">纠结</span>${(x.ms/1000).toFixed(1)} 秒才决定</div>
+      <div class="d">${esc(x.ctx)}</div>
+      <div class="d" style="margin-top:4px;color:var(--ink3)">你选了：${esc(x.label)}</div></div>`).join('');
+  const instinct = fast.map(x=>`
+    <div class="evi"><div class="t"><span class="tag t">本能</span>${(x.ms/1000).toFixed(1)} 秒就选</div>
+      <div class="d">${esc(x.ctx)}</div>
+      <div class="d" style="margin-top:4px;color:var(--ink3)">你选了：${esc(x.label)}</div></div>`).join('');
+
+  const top3 = Object.entries(dims).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const bot3 = Object.entries(dims).sort((a,b)=>a[1]-b[1]).slice(0,3);
+
+  const el = document.getElementById('app');
+  el.innerHTML = `
+  <div class="card" style="background:linear-gradient(180deg,#FFF,#FAFBFD)">
+    <div class="small" style="letter-spacing:1.2px;color:var(--purple);margin-bottom:8px">奕识 · 现场取证报告</div>
+    <h1>你的选择，比你的描述更接近答案</h1>
+    <p class="small" style="margin-top:8px">${answered.length} 个两难情境，总用时 ${(totalMs/1000).toFixed(0)} 秒，平均每题 ${(avg/1000).toFixed(1)} 秒。数据只存在这台设备上。</p>
+    <div class="note warn" style="margin-bottom:0"><b>这是一份"现场版"报告：</b>它只看你此刻的取舍，没有你过去半年的行为轨迹。方向可信，细节不如完整版——完整版要回到电脑上跑，读你的真实会话记录。</div>
+  </div>
+
+  <div class="card">
+    <div class="sec-h"><div class="sec-n">①</div><h2>证据轴</h2></div>
+    <div class="sec-sub">你答题时的行为本身，就是证据。犹豫和秒选，指向不同的东西。</div>
+    <h3 style="margin-top:4px">最犹豫的 ${hesit ? slow.length : 0} 题</h3>
+    <p class="small" style="margin-bottom:4px">想得久，说明两边都有你舍不得的东西——这些就是你的真实纠结点。</p>
+    ${hesit || '<p class="small">无明显犹豫项。</p>'}
+    <h3 style="margin-top:18px">最快决定的 ${fast.length} 题</h3>
+    <p class="small" style="margin-bottom:4px">几乎不用想就选的，是你的默认反应，通常最接近底色。</p>
+    ${instinct}
+  </div>
+
+  <div class="card">
+    <div class="sec-h"><div class="sec-n">②</div><h2>底色轴</h2></div>
+    <div class="sec-sub">十个动作倾向。由 18 次取舍累加得出，不是自评。</div>
+    <div class="radar-wrap">${radar(dims)}</div>
+    <table style="margin-top:10px">
+      ${DIMS.map(d=>`<tr>
+        <td style="width:32%">${DL[d]}</td>
+        <td style="width:54%"><div class="bar"><i style="width:${dims[d]}%;background:#2E6FD6"></i></div></td>
+        <td class="mono" style="text-align:right">${dims[d]}</td></tr>`).join('')}
+    </table>
+    <p class="small" style="margin-top:10px">最强：${top3.map(([d,v])=>`${DL[d]} ${v}`).join('　·　')}</p>
+    <p class="small" style="margin-top:3px">最弱：${bot3.map(([d,v])=>`${DL[d]} ${v}`).join('　·　')}</p>
+  </div>
+
+  <div class="card">
+    <div class="sec-h"><div class="sec-n">③</div><h2>岗位排序</h2></div>
+    <div class="sec-sub">综合分 = 适配 × 0.55 + 社会距离 × 0.45。社会距离此处为岗位客观开放度，未做个人校准。</div>
+    ${roles.map(r=>{
+      const c = {best:'#0F8A72',hard:'#2E6FD6',drain:'#B87B15',avoid:'#C0392B'}[r.quad.k];
+      const reasons = r.detail.slice().sort((a,b)=>b.need-a.need).slice(0,3)
+        .map(x=>`<span class="tag">${DL[x.d]} 你${Math.round(x.u)}/需${x.need} <b style="color:${x.status==='不足'?'#C0392B':'#0F8A72'}">${x.status}</b></span>`).join('');
+      return `<div style="border:1px solid var(--line);border-radius:10px;padding:13px;margin-bottom:9px">
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <b style="color:var(--ink3);font-size:14px">${r.rank}</b>
+          <b style="font-size:14.5px">${esc(r.name)}</b>
+          <span class="tag" style="color:${c};background:${c}14;margin-left:auto">${r.quad.label}</span>
+        </div>
+        <div class="small" style="margin-top:4px">${esc(r.work)}</div>
+        <div class="small" style="margin-top:4px;color:var(--ink3)">适配 ${r.fit}　社会 ${r.social}　综合 <b style="color:${c};font-size:15px">${r.total}</b></div>
+        <div class="bar"><i style="width:${r.total}%;background:${c}"></i></div>
+        <div style="margin-top:8px">${reasons}</div>
+        ${r.wasted.length ? `<div class="note warn" style="margin:8px 0 0;font-size:12px">你的「${r.wasted.map(d=>DL[d]).join('、')}」在这条路上用不上——内耗感的来源，不是能力问题。</div>` : ''}
+        <div class="small" style="margin-top:6px">代价：${esc(r.cost)}</div>
+      </div>`;
+    }).join('')}
+  </div>
+
+  <div class="card">
+    <div class="sec-h"><div class="sec-n">④</div><h2>四象限</h2></div>
+    <div class="sec-sub">纵轴合不合手，横轴够不够得着。适配以中位数 ${mid} 为界。</div>
+    ${scatter(roles, mid)}
+    <div class="note"><b>先看哪个象限人最多。</b>如果一个都没有，说明你还没进入任何一条路的有效射程——此时的任务是补入口，不是挑方向。</div>
+  </div>
+
+  <div class="card">
+    <div class="sec-h"><div class="sec-n">⑤</div><h2>历史人物</h2></div>
+    <div class="sec-sub">比的是决策结构，不是性格。每条都附"不能类比之处"。</div>
+    ${figs.map(f=>`<div class="fig">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <b style="font-size:15px">${f.name}<span class="small" style="margin-left:6px">${f.era}</span></b>
+        <span class="mono small">契合 ${f.score}</span>
+      </div>
+      <div class="small" style="margin:4px 0 8px">${esc(f.line)}</div>
+      ${f.nodes.map(n=>`<div class="node">约束：<b>${esc(n.c)}</b><br>守住：${esc(n.k)}<br>代价：${esc(n.p)}</div>`).join('')}
+      <div class="note good" style="margin:8px 0 6px;font-size:12px"><b>对你适用：</b>${esc(f.fit)}</div>
+      <div class="note bad" style="margin:0;font-size:12px"><b>不能类比：</b>${esc(f.not)}</div>
+    </div>`).join('')}
+  </div>
+
+  <div class="card">
+    <div class="sec-h"><div class="sec-n">⑥</div><h2>书籍匹配</h2></div>
+    <div class="sec-sub">按你当前最高的维度选，不按评分。</div>
+    <h3 style="color:var(--teal);margin-top:6px">现在读</h3>
+    ${nowBooks.map((b,i)=>`<div class="book"><div class="idx">${i+1}</div><div>
+      <div style="font-weight:600;font-size:13.5px">${esc(b.t)}<span class="small" style="margin-left:6px">${esc(b.a)}</span></div>
+      <div class="small" style="margin-top:2px">解答：${esc(b.q)}</div></div></div>`).join('')}
+    <h3 style="color:var(--ink3);margin-top:16px">现在不必读</h3>
+    ${skipBooks.map((b,i)=>`<div class="book skip"><div class="idx">${i+1}</div><div>
+      <div style="font-weight:600;font-size:13.5px">${esc(b.t)}</div>
+      <div class="small" style="margin-top:2px;color:var(--amber)">${esc(b.skip)}</div></div></div>`).join('')}
+  </div>
+
+  <div class="card">
+    <div class="sec-h"><div class="sec-n">⑦</div><h2>扰动校准</h2></div>
+    <div class="sec-sub">这一节只做一件事：告诉你现在的状态会不会让上面的结论变形。</div>
+    <div class="note ${avg < 4000 ? 'warn' : 'good'}"><b>答题速度：</b>平均每题 ${(avg/1000).toFixed(1)} 秒。
+      ${avg < 4000 ? '整体偏快，可能是凭直觉答的——结论反映的是本能，不是深思后的取舍。' :
+        (avg > 15000 ? '整体偏慢，你可能在每题上都在权衡"哪个更正确"，而不是"哪个更像你"。' :
+        '节奏正常，直觉和权衡混合，这类结论通常最稳。')}</div>
+    <div class="note"><b>焦虑未测：</b>本版本没有你的历史语料，无法计算焦虑与滤镜。如果你正在急着要一个答案，任何排序都会被"尽快确定"的心态放大——隔两周再答一次，看结论是否稳定，比一次作答可靠得多。</div>
+    <div class="note bad"><b>社会距离是短板：</b>这里用的是岗位客观开放度，不知道你实际认识谁。完整版会用你语料里的"岗位词 × 人脉词"共现来校准——这也是两条路差距最大的地方。</div>
+  </div>
+
+  <div class="card">
+    <div class="sec-h"><div class="sec-n" style="background:var(--surface2);color:var(--ink3)">附</div><h2>这份报告不能回答什么</h2></div>
+    <div class="sec-sub">比前面任何一节都重要。</div>
+    <div class="note bad"><b>它只测了 18 次取舍。</b>不是半年行为轨迹。18 题能看出倾向，看不出一致性——同一个人隔一周答，可能有 2-3 个维度变化。</div>
+    <div class="note bad"><b>它读的是"你在假设情境里怎么选"。</b>真实工作里有资源、老板、deadline 的约束，假设情境里没有。所以它回答"你的倾向"，不回答"你会怎么做"。</div>
+    <div class="note bad"><b>它不知道你的能力。</b>拆解倾向强不代表能做投研——后者还需要财务基础、承压能力、市场判断。倾向 ≠ 胜任力。</div>
+    <div class="note bad" style="margin-bottom:0"><b>它不替你做决定。</b>只回答"合不合手、够不够得着"，不回答"你该选哪个"。</div>
+  </div>
+
+  <div class="fixedbar"><div class="in">
+    <button onclick="exportJSON()">导出数据</button>
+    <button class="primary" onclick="reset()">重新作答</button>
+  </div></div>`;
+
+  window.scrollTo(0,0);
+}
+
+/* ---------- 导出 ---------- */
+function exportJSON(){
+  const dims = scoreProfile();
+  const payload = {
+    meta: {source:'quiz', generated_at:new Date().toISOString(), note:'现场取证版：18 题限时取舍，无历史语料'},
+    profile: {dims, known:Object.fromEntries(DIMS.map(d=>[d,true]))},
+    answers: S.ans.map((a,i)=>({idx:i+1, ctx:QS[i].ctx, chose:a.label, ms:a.ms, dims:a.dims}))
+  };
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'yishi-quiz-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 3000);
+}
+
+/* ---------- 工具 ---------- */
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function median(a){ const b=[...a].sort((x,y)=>x-y); const m=Math.floor(b.length/2); return b.length%2?b[m]:Math.round((b[m-1]+b[m])/2*10)/10; }
+
+/* ---------- 启动 ---------- */
+load();
+renderHome();
+</script>
+</body>
+</html>
