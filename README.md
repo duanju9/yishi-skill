@@ -2,7 +2,29 @@
 
 > 不问你说自己是谁，只读你实际做过什么。
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-2E6FD6.svg)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-0F8A72.svg)](https://www.python.org/)
+[![No dependencies](https://img.shields.io/badge/dependencies-none-B87B15.svg)](#)
+[![No network](https://img.shields.io/badge/data-never%20leaves%20your%20machine-C0392B.svg)](#隐私)
+
 一个 Claude Code / WorkBuddy / Cursor 通用的 skill：读取你本机已有的 AI 会话与记忆，还原真实行为证据，算出你与 7 条职业路径的**加权适配排序**，并生成一份可以直接打开的可视化报告。
+
+**三步开始**：复制下面这段 → 粘给任意能跑命令的 AI → 它会自己装、自己采集、自己出报告。
+
+```
+请安装并使用「奕识决策」skill，仓库：https://github.com/duanju9/yishi-skill
+
+1. 克隆到你的 skills 目录：Claude Code 用 ~/.claude/skills/yishi-skill，
+   WorkBuddy 用 ~/.workbuddy/skills/yishi-skill，其他环境放任意本地目录。
+2. 读取该目录的 SKILL.md，严格按其中 5 步工作流执行，不要自创流程。
+3. 采集后把「会话数 / 消息数 / 时间跨度 / 委托类型前三 / 领域前三」念给我确认。
+4. 建模前先问我心里有没有预设方向。
+5. 出报告后用文字讲：最强证据、最反直觉的发现、我的预设排第几、三条边界。
+
+硬性约束：不要跳过采集自己编分数；全程本地不上传；少于 30 条消息就直接说样本不足。
+```
+
+不想装 skill 也行——`git clone` 后跑三条 python 命令即可，见下方「安装」里的第三种方式。
 
 ## 它解决什么问题
 
@@ -42,32 +64,56 @@
 
 ## 安装
 
-### 方式一：让 AI 自己装（推荐）
+### 方式一：复制一段话，让 AI 自己装自己跑（最省事）
 
-把下面这段直接粘给 Claude Code / WorkBuddy / Cursor：
+把下面**整段**粘给 Claude Code / Cursor / WorkBuddy / 任何能执行命令的 AI：
 
 ```
-安装并使用奕识决策 skill：
-仓库地址 https://github.com/<your-name>/yishi-skill
-1. 把仓库克隆到你的 skills 目录（如 ~/.claude/skills/ 或 ~/.workbuddy/skills/）
-2. 读取 yishi-skill/SKILL.md，严格按里面的工作流执行
-3. 先采集我本机的 AI 会话与记忆，把采集到的数据范围念给我确认
-4. 问我心里有没有预设方向，然后建模、生成报告、用文字讲结论
-注意：不要跳过采集步骤自己编分数。
+请安装并使用「奕识决策」skill，仓库：https://github.com/duanju9/yishi-skill
+
+1. 克隆到你的 skills 目录（按你的环境选一个，不存在就创建）：
+   Claude Code   → ~/.claude/skills/yishi-skill
+   WorkBuddy     → ~/.workbuddy/skills/yishi-skill
+   Cursor        → ~/.cursor/skills/yishi-skill
+   其他          → 任意本地目录也可，后续按绝对路径调用脚本
+
+2. 读取该目录下的 SKILL.md，严格按里面的 5 步工作流执行，不要自创流程。
+
+3. 第 1 步采集时，把终端输出的「会话数 / 消息数 / 时间跨度 / 委托类型前三 / 领域前三」
+   念给我确认，再继续。
+
+4. 建模前先问我：心里有没有预设方向（产品 / 咨询 / 投研 / 内容 / 技术 / 战略 / 创业）。
+
+5. 生成报告 HTML 后，用文字讲四件事：最强的证据是哪条、最反直觉的发现是什么、
+   我的预设排第几、这份报告的三条边界。
+
+硬性约束：
+- 不要跳过采集步骤自己编分数，所有分数必须由我的语料算出来。
+- 全程本地读取、本地生成，不要上传我的任何数据，不要索取账号密码。
+- 如果采集到的消息少于 30 条，直接告诉我"样本不足"，不要硬出结论。
 ```
 
-### 方式二：手动
+### 方式二：一行命令装好，然后说一句话
+
+macOS / Linux / Git Bash：
 
 ```bash
-git clone https://github.com/<your-name>/yishi-skill.git ~/.workbuddy/skills/yishi-skill
+git clone --depth 1 https://github.com/duanju9/yishi-skill.git ~/.claude/skills/yishi-skill
 ```
 
-然后对它说："用奕识分析我该做什么方向。"
+Windows PowerShell：
 
-## 手动跑（不装 skill 也能用）
+```powershell
+git clone --depth 1 https://github.com/duanju9/yishi-skill.git "$env:USERPROFILE\.workbuddy\skills\yishi-skill"
+```
+
+装完直接说：**"用奕识分析我该做什么方向"**。
+
+### 方式三：不装 skill，直接跑脚本
 
 ```bash
-cd yishi-skill
+git clone --depth 1 https://github.com/duanju9/yishi-skill.git /tmp/yishi-skill
+cd /tmp/yishi-skill
 
 # 1. 采集（默认最近 180 天，自动脱敏）
 python scripts/collect_sessions.py --out corpus.json --since 180
@@ -75,11 +121,21 @@ python scripts/collect_sessions.py --out corpus.json --since 180
 # 2. 建模（--preset 填你心里的预设：research/content/product/consulting/engineering/strategy/founder）
 python scripts/score.py --corpus corpus.json --out report-data.json --preset product
 
-# 3. 渲染
+# 3. 渲染（产出单文件 HTML，双击即开）
 python scripts/render.py --data report-data.json --out 我的决策报告.html
 ```
 
-只依赖 Python 3.9+ 标准库，不需要 pip 安装任何东西。
+只依赖 Python 3.9+ 标准库，不需要 pip 安装任何东西。三条命令、两分钟。
+
+### 拿不到 GitHub 时
+
+网络受限的话，任意镜像前缀都能用，例如：
+
+```bash
+git clone --depth 1 https://ghproxy.net/https://github.com/duanju9/yishi-skill.git
+```
+
+或者直接把仓库页面打包下载解压，效果一样。
 
 ## 数据从哪来
 
