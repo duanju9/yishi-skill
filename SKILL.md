@@ -70,7 +70,9 @@ python "$S/scripts/score.py" --corpus ./yishi-corpus.json --out ./report-data.js
 python "$S/scripts/render.py" --data ./report-data.json --out ./奕识报告.html --title "<姓名或场景>的决策报告"
 ```
 
-产出单文件 HTML，双击即开。用 `present_files` 呈现给用户。
+产出单文件 HTML，双击即开。**固定七节，顺序不可删改**：① 证据轴（月度轨迹 + 增益/损耗清单）→ ② 底色轴（10 维雷达）→ ③ 岗位排序（可展开三情景）→ ④ 四象限（散点 + 象限归属）→ ⑤ 历史人物 → ⑥ 书籍匹配 → ⑦ 扰动校准，最后附「这份报告不能回答什么」。用 `present_files` 呈现给用户。
+
+若时间数据缺失（单日会话），① 会自动降级为"无时间数据"，其余六节不受影响——不要因此删掉该节。
 
 ### 步骤 5：讲结论（这一步不能省）
 

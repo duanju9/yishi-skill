@@ -67,6 +67,11 @@ FIGURE_DIMS = {
     "simaqian": ["focus", "express", "operate"],
 }
 
+try:
+    from keywords import TASK_TYPES, DOMAINS
+except ImportError:  # 作为包被引用时
+    from .keywords import TASK_TYPES, DOMAINS
+
 ANXIETY_WORDS = r"焦虑|迷茫|害怕|来不及|同龄人|年龄|慌|压力大|内耗|怀疑自己|没方向|不知道要什么|睡不着"
 FILTER_WORDS = r"是不是应该|是不是该|听说|据说|网上说|别人都说|看起来|感觉.*很好|理想|梦想|向往|羡慕"
 
@@ -162,20 +167,114 @@ def build_profile(corpus, lib):
 
 # ---------------------------------------------------------------- 证据
 
+def norm_ts(v):
+    """归一化各种时间格式到毫秒时间戳。"""
+    if v is None:
+        return None
+    if isinstance(v, (int, float)):
+        n = float(v)
+        if n > 1e14:
+            return int(n / 1000)
+        if n > 1e11:
+            return int(n)
+        if n > 1e9:
+            return int(n * 1000)
+        return None
+    s = str(v).strip()
+    if re.fullmatch(r"\d+(\.\d+)?", s):
+        return norm_ts(float(s))
+    try:
+        return int(datetime.fromisoformat(s.replace("Z", "+00:00")).timestamp() * 1000)
+    except ValueError:
+        return None
+
+
+def build_timeline(corpus):
+    """时序轴：按月统计委托量、主导领域、深度动作占比，并判断连续性。"""
+    buckets = {}
+    for th in corpus["threads"]:
+        for m in th["messages"]:
+            ts = norm_ts(m["ts"]) or th["ts_end"]
+            if not ts:
+                continue
+            mon = datetime.fromtimestamp(ts / 1000).strftime("%Y-%m")
+            b = buckets.setdefault(mon, {"total": 0, "deep": 0, "doms": {}})
+            b["total"] += 1
+            for name, pat in TASK_TYPES.items():
+                if re.search(pat, m["text"], re.I) and name in ("分析拆解", "写作文案", "编码实现"):
+                    b["deep"] += 1
+                    break
+            for name, pat in DOMAINS.items():
+                if re.search(pat, m["text"], re.I):
+                    b["doms"][name] = b["doms"].get(name, 0) + 1
+
+    months = sorted(buckets)
+    out = []
+    for mon in months:
+        b = buckets[mon]
+        top = max(b["doms"], key=b["doms"].get) if b["doms"] else None
+        out.append({
+            "month": mon,
+            "total": b["total"],
+            "top_domain": top,
+            "deep_ratio": round(b["deep"] / max(1, b["total"]), 2),
+        })
+
+    # 连续性：补全中间断档月份，标出空窗
+    if months:
+        filled = []
+        y, mth = int(months[0][:4]), int(months[0][5:7])
+        end_y, end_m = int(months[-1][:4]), int(months[-1][5:7])
+        while (y, mth) <= (end_y, end_m):
+            key = f"{y:04d}-{mth:02d}"
+            rec = next((x for x in out if x["month"] == key), None)
+            filled.append(rec or {"month": key, "total": 0, "top_domain": None, "deep_ratio": 0})
+            mth += 1
+            if mth > 12:
+                mth = 1
+                y += 1
+        out = filled
+
+    gaps = [x["month"] for x in out if x["total"] == 0]
+    peak = max(out, key=lambda x: x["total"]) if out else None
+    trend = "样本期太短，无法判断趋势"
+    if len(out) >= 3:
+        first = sum(x["total"] for x in out[:len(out) // 2])
+        second = sum(x["total"] for x in out[len(out) // 2:])
+        if second > first * 1.25:
+            trend = "委托量在上升——你正在加大投入"
+        elif second < first * 0.75:
+            trend = "委托量在下降——注意力可能转移了，或这段时间没空"
+        else:
+            trend = "委托量平稳——没有明显的加速或放弃"
+    return {"months": out, "gaps": gaps, "peak": peak, "trend": trend,
+            "continuity": ("连续，无明显空窗" if not gaps else f"有 {len(gaps)} 个月空窗：{'、'.join(gaps)}")}
+
+
 def build_evidence(corpus, profile, lib):
-    texts = [(m["text"], th["agent"], th["session"]) for th in corpus["threads"] for m in th["messages"]]
+    texts = [(m["text"], th["agent"], th["session"], norm_ts(m["ts"]) or th["ts_end"])
+             for th in corpus["threads"] for m in th["messages"]]
     tasks = corpus["stats"].get("task_types", {})
     doms = corpus["stats"].get("domains", {})
     total = len(texts)
 
+    def month_postfix(months):
+        """把首末月份渲染成'（3–11 月连续）'这类后缀，供证据轴展示时间跨度。"""
+        ms = sorted({m for m in months if m})
+        if not ms:
+            return ""
+        if len(ms) == 1:
+            return f"（{ms[0]}）"
+        return f"（{ms[0]} 至 {ms[-1]}，{len(ms)} 个月）"
+
     def samples(pattern, k=3):
-        out = []
-        for t, agent, sess in texts:
+        out, months = [], []
+        for t, agent, sess, ts in texts:
             if re.search(pattern, t, re.I):
-                out.append({"text": t[:160], "agent": agent, "session": sess})
-                if len(out) >= k:
-                    break
-        return out
+                months.append(datetime.fromtimestamp(ts / 1000).strftime("%Y-%m") if ts else None)
+                if len(out) < k:
+                    out.append({"text": t[:160], "agent": agent, "session": sess})
+        return out, months
 
     gains, losses = [], []
 
@@ -183,11 +282,13 @@ def build_evidence(corpus, profile, lib):
     for name, info in sorted(tasks.items(), key=lambda kv: -kv[1]["count"])[:4]:
         if info["count"] < 5:
             continue
+        s, months = samples(task_pattern(name))
         gains.append({
-            "title": f"反复委托「{name}」类任务 {info['count']} 次",
+            "title": f"反复委托「{name}」类任务 {info['count']} 次{month_postfix(months)}",
             "detail": f"占全部委托 {round(info['ratio'] * 100)}%。这是你自己主动发起、无人要求的工作，比任何自评都更能说明你愿意把时间花在哪。",
             "dim": map_task_to_dim(name),
-            "samples": samples(task_pattern(name), 2),
+            "span": month_postfix(months),
+            "samples": s,
         })
     for name, cnt in sorted(doms.items(), key=lambda kv: -(kv[1] or 0))[:3]:
         if cnt < 10:
@@ -196,6 +297,7 @@ def build_evidence(corpus, profile, lib):
             "title": f"「{name}」相关话题出现 {cnt} 次",
             "detail": "领域级重复，说明这不是一次性好奇，而是持续的关注方向。",
             "dim": name,
+            "span": "",
             "samples": [],
         })
 
@@ -207,7 +309,7 @@ def build_evidence(corpus, profile, lib):
             "detail": "反复在'要不要/该不该'上打转，说明这些决策一直没有被真正做出。纠结本身消耗的精力，往往超过选错。",
             "samples": [{"text": t[:160], "agent": "", "session": ""} for t in d["samples"][:3]],
         })
-    anxiety_hits = [t for t, _, _ in texts if re.search(ANXIETY_WORDS, t)]
+    anxiety_hits = [t for t, _, _, _ in texts if re.search(ANXIETY_WORDS, t)]
     if len(anxiety_hits) >= 5:
         losses.append({
             "title": f"焦虑类表述 {len(anxiety_hits)} 次",
@@ -461,6 +563,7 @@ def main():
         raise SystemExit("[!] 语料为空，无法建模。请先积累会话记录或导入 ChatGPT 导出。")
 
     profile = build_profile(corpus, lib)
+    timeline = build_timeline(corpus)
     evidence = build_evidence(corpus, profile, lib)
     dist = disturbance(corpus, profile)
     roles, fit_mid, social_w = build_roles(corpus, lib, profile, dist, profile["confidence"]["score"])
@@ -491,6 +594,7 @@ def main():
         "stats": corpus.get("stats", {}),
         "profile": profile,
         "evidence": evidence,
+        "timeline": timeline,
         "disturbance": dist,
         "weights": {"fit": round(1 - social_w, 2), "social": social_w},
         "fit_mid": fit_mid,

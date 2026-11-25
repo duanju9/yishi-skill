@@ -16,23 +16,35 @@
   --r:12px; --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1000px;margin:0 auto;padding:38px 22px 80px}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 22px 80px}
+
+/* 七节锚点导航 */
+.nav7{position:sticky;top:0;z-index:30;display:flex;gap:5px;flex-wrap:wrap;padding:9px 4px;
+  background:rgba(247,248,250,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-bottom:18px}
+.nav7 a{font-size:11.5px;color:var(--ink2);text-decoration:none;padding:5px 10px;border-radius:7px;border:1px solid transparent;transition:.15s;white-space:nowrap}
+.nav7 a:hover{background:var(--surface);border-color:var(--line);color:var(--blue)}
+
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;margin-bottom:14px}
+.sec-h{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.sec-n{flex:0 0 24px;height:24px;border-radius:7px;background:var(--blue-bg);color:var(--blue);
+  font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sec-h h2{font-size:16.5px;font-weight:650}
+.sec-sub{font-size:12px;color:var(--ink3);margin:2px 0 14px 33px}
+
 h1{font-size:23px;font-weight:650;letter-spacing:.3px;margin-bottom:6px}
-h2{font-size:16.5px;font-weight:650;margin-bottom:4px}
 h3{font-size:13.5px;font-weight:650;margin-bottom:8px}
 p{font-size:13.5px;color:var(--ink2)}
 .small{font-size:12px;color:var(--ink3);line-height:1.6}
 .mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11.5px}
-.hero{background:linear-gradient(180deg,#FFF, #FAFBFD);border:1px solid var(--line);border-radius:var(--r);padding:30px 26px;margin-bottom:14px}
+.hero{background:linear-gradient(180deg,#FFF,#FAFBFD);border:1px solid var(--line);border-radius:var(--r);padding:28px 26px;margin-bottom:14px}
 .hero .kicker{font-size:11px;letter-spacing:1.4px;color:var(--purple);text-transform:uppercase;margin-bottom:10px}
 .hero .lead{font-size:14px;color:var(--ink2);margin-top:8px;max-width:720px}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
 .chip{background:var(--surface2);border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:11.5px;color:var(--ink2)}
 .chip b{color:var(--ink);font-weight:600}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .note{background:var(--blue-bg);border-left:3px solid var(--blue);padding:11px 13px;border-radius:0 8px 8px 0;font-size:12.5px;color:var(--ink2);margin:12px 0}
 .note.warn{background:var(--amber-bg);border-left-color:var(--amber)}
 .note.bad{background:var(--red-bg);border-left-color:var(--red)}
@@ -77,9 +89,12 @@ input[type=range]{flex:1;accent-color:var(--blue)}
 .radar-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .legend{font-size:11.5px;color:var(--ink2)}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.qbox{border:1px solid var(--line);border-radius:9px;padding:13px 15px}
+.qbox h4{font-size:12.5px;font-weight:650;margin-bottom:6px}
+.qbox p{font-size:11.5px;line-height:1.6}
 footer{text-align:center;font-size:11.5px;color:var(--ink3);padding:24px 0 0}
-@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
-@media print{body{background:#fff}.card{break-inside:avoid}}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.nav7{overflow-x:auto;flex-wrap:nowrap}}
+@media print{body{background:#fff}.card{break-inside:avoid}.nav7{display:none}}
 </style>
 </head>
 <body>
@@ -87,7 +102,7 @@ footer{text-align:center;font-size:11.5px;color:var(--ink3);padding:24px 0 0}
 
 <script>
 const DATA = /*__YISHI_DATA__*/ null;
-/* 兼容：数据外置时从同目录 report-data.json 读取 */
+
 async function loadData(){
   if (DATA) return DATA;
   try {
@@ -102,11 +117,10 @@ const QUAD_COLOR = {best:C.teal, hard:C.blue, drain:C.amber, avoid:C.red, unknow
 const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const pctf = v => Math.round((v||0)*100);
 
-/* ---------- 雷达图 ---------- */
+/* ============ ② 底色轴：雷达 ============ */
 function radar(dims, labels){
   const keys = Object.keys(dims);
-  const cx = 150, cy = 148, R = 104;
-  const n = keys.length;
+  const cx = 150, cy = 148, R = 104, n = keys.length;
   const pt = (i, r) => {
     const a = -Math.PI/2 + i * 2*Math.PI/n;
     return [cx + Math.cos(a)*r, cy + Math.sin(a)*r];
@@ -128,19 +142,48 @@ function radar(dims, labels){
     const [x,y] = pt(i, R*Math.max(0.03,(dims[k]||0)/100));
     return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="${C.blue}"/>`;
   }).join('');
-  return `<svg viewBox="0 0 300 300" width="300" height="300" role="img" aria-label="底色十维雷达图">
+  return `<svg viewBox="0 0 300 300" width="288" height="288" role="img" aria-label="底色十维雷达图">
     ${rings}${axes}
     <polygon points="${poly}" fill="rgba(46,111,214,.16)" stroke="${C.blue}" stroke-width="1.8"/>
-    ${dots}${ticks}
-  </svg>`;
+    ${dots}${ticks}</svg>`;
 }
 
-/* ---------- 四象限散点 ---------- */
+/* ============ ① 证据轴：月度轨迹 ============ */
+function timelineChart(tl){
+  const ms = (tl && tl.months) ? tl.months : [];
+  if (!ms.length) return '<p class="small">无时间数据。</p>';
+  const W = 680, H = 216, padL = 34, padB = 40, padT = 26;
+  const maxV = Math.max(1, ...ms.map(m=>m.total));
+  const step = (W - padL - 16) / ms.length;
+  const bw = Math.min(58, step - 8);
+  const sy = v => H - padB - (v/maxV) * (H - padB - padT);
+  let g = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px" role="img" aria-label="月度委托量轨迹">`;
+  [0, .5, 1].forEach(k=>{
+    const y = sy(maxV*k);
+    g += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-16}" y2="${y.toFixed(1)}" stroke="#E9ECF2" stroke-dasharray="${k===0?'':'3 3'}"/>`;
+    g += `<text x="${padL-8}" y="${(y+3.5).toFixed(1)}" font-size="9.5" fill="#A8B0C0" text-anchor="end">${Math.round(maxV*k)}</text>`;
+  });
+  ms.forEach((m,i)=>{
+    const x = padL + i*step + (step-bw)/2;
+    const isPeak = tl.peak && m.month === tl.peak.month;
+    const empty = m.total === 0;
+    const h = Math.max(empty?2:3, H - padB - sy(m.total));
+    const col = empty ? '#E3E6ED' : (isPeak ? C.blue : 'rgba(46,111,214,.42)');
+    g += `<rect x="${x.toFixed(1)}" y="${(H-padB-h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${col}"/>`;
+    if (!empty) g += `<text x="${(x+bw/2).toFixed(1)}" y="${(H-padB-h-6).toFixed(1)}" font-size="10" font-weight="600" fill="${isPeak?C.blue:'#59627A'}" text-anchor="middle">${m.total}</text>`;
+    g += `<text x="${(x+bw/2).toFixed(1)}" y="${H-padB+15}" font-size="10" fill="#8B93A7" text-anchor="middle">${m.month.slice(2)}</text>`;
+    if (m.top_domain) g += `<text x="${(x+bw/2).toFixed(1)}" y="${H-padB+28}" font-size="9" fill="#A8B0C0" text-anchor="middle">${esc(m.top_domain)}</text>`;
+  });
+  g += `</svg>`;
+  return g;
+}
+
+/* ============ ④ 四象限散点 ============ */
 function scatter(roles, fitMid){
   const W = 620, H = 380, pad = 52;
   const x0 = pad, x1 = W - pad, y0 = pad, y1 = H - pad;
-  const sx = v => x0 + (v/100)*(x1-x0);           // 社会距离 → 横轴
-  const sy = v => y1 - (v/100)*(y1-y0);           // 适配 → 纵轴
+  const sx = v => x0 + (v/100)*(x1-x0);
+  const sy = v => y1 - (v/100)*(y1-y0);
   const mx = sx(60), my = sy(fitMid);
   const zone = (x,y,w,h,color) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${color}" opacity=".05"/>`;
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px" role="img" aria-label="适配与社会距离四象限图">`;
@@ -157,10 +200,10 @@ function scatter(roles, fitMid){
     {x:x1-12, y:y1-10, t:'适配低 · 距离近｜易上手但内耗', c:C.amber, anchor:'end'}
   ];
   labs.forEach(l=>{ svg += `<text x="${l.x}" y="${l.y}" font-size="10.5" fill="${l.c}" text-anchor="${l.anchor||'start'}" opacity=".85">${l.t}</text>`; });
-  roles.forEach((r,i)=>{
+  roles.forEach(r=>{
     const x = sx(r.social), y = sy(r.fit);
     const col = QUAD_COLOR[r.quad.key] || C.blue;
-    svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7" fill="${col}" opacity=".85"/>`;
+    svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7" fill="${col}" opacity=".88"/>`;
     svg += `<text x="${x.toFixed(1)}" y="${(y-13).toFixed(1)}" font-size="11" font-weight="600" fill="#1E2430" text-anchor="middle">${esc(r.name)}</text>`;
     svg += `<text x="${x.toFixed(1)}" y="${(y+20).toFixed(1)}" font-size="10" fill="#8B93A7" text-anchor="middle">${r.total}</text>`;
   });
@@ -170,29 +213,36 @@ function scatter(roles, fitMid){
   return svg;
 }
 
-/* ---------- 主渲染 ---------- */
+/* ============ 主渲染 ============ */
 function render(d){
-  const p = d.profile, st = d.stats || {};
+  const p = d.profile, st = d.stats || {}, tl = d.timeline || {months:[]};
   const src = (d.meta && d.meta.sources) ? d.meta.sources.map(s=>`${s.agent} ${s.sessions} 会话`).join(' · ') : '本地会话';
   const el = document.getElementById('app');
+
+  const eviList = (arr, cls, label) => arr.map(g=>`
+    <div class="evi">
+      <div class="t"><span class="tag ${cls}">${label}</span>${esc(g.title)}</div>
+      <div class="d">${esc(g.detail)}</div>
+      ${(g.samples||[]).map(s=>`<div class="sample">${esc(s.text)}</div>`).join('')}
+    </div>`).join('');
 
   const roleRows = d.roles.map(r=>{
     const col = QUAD_COLOR[r.quad.key];
     const fr = r.fit_reasons.map(x=>`<span class="tag">${esc(p.dim_labels[x.dim]||x.dim)} 你${x.you} / 需${x.need} <b style="color:${x.status==='不足'?C.red:(x.status==='未知'?C.ink3:C.teal)}">${x.status}</b></span>`).join('');
     return `
-    <div class="card" style="padding:0;overflow:hidden">
-      <div class="rank-row" onclick="this.nextElementSibling.classList.toggle('open')" style="padding:16px 20px">
+    <div style="border:1px solid var(--line);border-radius:10px;margin-bottom:8px;overflow:hidden">
+      <div class="rank-row" onclick="this.nextElementSibling.classList.toggle('open')" style="padding:14px 16px">
         <div style="display:flex;align-items:center;gap:12px">
-          <div style="flex:0 0 26px;font-size:15px;font-weight:700;color:var(--ink3)">${r.rank}</div>
+          <div style="flex:0 0 24px;font-size:15px;font-weight:700;color:var(--ink3)">${r.rank}</div>
           <div style="flex:1">
             <div style="display:flex;align-items:baseline;gap:9px;flex-wrap:wrap">
-              <b style="font-size:14.5px">${esc(r.name)}</b>
+              <b style="font-size:14px">${esc(r.name)}</b>
               <span class="tag" style="color:${col};background:${col}14">${esc(r.quad.label)}</span>
               ${r.id === (d.preset&&d.preset.id) ? '<span class="tag p">你的预设</span>' : ''}
             </div>
             <div class="small" style="margin-top:3px">${esc(r.work)}</div>
           </div>
-          <div style="flex:0 0 150px;text-align:right">
+          <div style="flex:0 0 146px;text-align:right">
             <div class="mono" style="font-size:11px;color:var(--ink3)">适配 ${r.fit}　社会 ${r.social}</div>
             <div style="font-size:19px;font-weight:700;color:${col}">${r.total}</div>
           </div>
@@ -200,7 +250,7 @@ function render(d){
         <div class="bar"><i style="width:${r.total}%;background:${col}"></i></div>
       </div>
       <div class="detail" style="margin:0;border-radius:0">
-        <p style="margin-bottom:10px"><b>为什么适配 ${r.fit}：</b>${esc(r.quad.advice)}</p>
+        <p style="margin-bottom:10px"><b>为什么是这个位置：</b>${esc(r.quad.advice)}</p>
         <div style="margin-bottom:10px">${fr}</div>
         <p style="margin-bottom:8px"><b>社会距离 ${r.social}</b>（客观开放度 ${r.social_detail.objective}${r.social_detail.bonus>0?'，语料共现 +'+r.social_detail.bonus:''}，置信度${r.social_detail.confidence}）：${esc(r.entry)}</p>
         <p style="margin-bottom:8px"><b>长期隐性消耗：</b>${esc(r.cost)}</p>
@@ -216,19 +266,22 @@ function render(d){
     </div>`;
   }).join('');
 
-  const gains = d.evidence.gains.map(g=>`
-    <div class="evi">
-      <div class="t"><span class="tag t">增益</span>${esc(g.title)}</div>
-      <div class="d">${esc(g.detail)}</div>
-      ${(g.samples||[]).map(s=>`<div class="sample">${esc(s.text)}</div>`).join('')}
-    </div>`).join('');
-
-  const losses = d.evidence.losses.map(g=>`
-    <div class="evi">
-      <div class="t"><span class="tag r">损耗</span>${esc(g.title)}</div>
-      <div class="d">${esc(g.detail)}</div>
-      ${(g.samples||[]).map(s=>`<div class="sample">${esc(s.text)}</div>`).join('')}
-    </div>`).join('');
+  const qgroup = {best:[], hard:[], drain:[], avoid:[], unknown:[]};
+  d.roles.forEach(r=>{ (qgroup[r.quad.key] = qgroup[r.quad.key] || []).push(r); });
+  const qmeta = [
+    {k:'best', t:'最优路线', d:'做起来顺手，还有人带路，试错成本最低。优先在这里找具体机会。'},
+    {k:'hard', t:'高潜力高难度', d:'很适合你，但孤军奋战。先解决"谁带你进门"，而不是先证明能力。'},
+    {k:'drain', t:'容易上手但内耗', d:'路好走，但长期消耗底色。可做跳板，但要设明确的退出时间点。'},
+    {k:'avoid', t:'双重劣势', d:'既不合手也够不着。除非有非常具体的理由，不要当主选项。'}
+  ];
+  const qcards = qmeta.map(q=>{
+    const list = qgroup[q.k] || [];
+    return `<div class="qbox" style="border-left:3px solid ${QUAD_COLOR[q.k]}">
+      <h4 style="color:${QUAD_COLOR[q.k]}">${q.t}　${list.length} 个</h4>
+      <p>${list.length ? list.map(r=>`<b>${esc(r.name)}</b>（适配 ${r.fit} / 社会 ${r.social}）`).join('<br>') : '<span style="color:var(--ink3)">无</span>'}</p>
+      <p style="margin-top:6px;color:var(--ink3)">${q.d}</p>
+    </div>`;
+  }).join('');
 
   const figs = d.figures.map(f=>`
     <div class="fig">
@@ -255,7 +308,7 @@ function render(d){
       <div style="flex:1">
         <div style="font-weight:600;font-size:13px">${esc(b.title)}<span class="small" style="font-weight:400;margin-left:7px">${esc(b.author)}</span></div>
         <div class="small" style="margin-top:2px">解答：${esc(b.question)}</div>
-        <div class="small" style="margin-top:2px">适用：${esc(b.answers)}${b.hit_dims.length?'　命中维度：'+esc(b.hit_dims.join('、')):''}</div>
+        <div class="small" style="margin-top:2px">适用：${esc(b.answers)}${b.hit_dims.length?'　命中：'+esc(b.hit_dims.join('、')):''}</div>
         ${skip?`<div class="small" style="margin-top:3px;color:var(--amber)">${esc(b.skip_when)}</div>`:`<div class="small" style="margin-top:3px;color:var(--teal)">${esc(b.why)}</div>`}
       </div>
     </div>`;
@@ -275,9 +328,38 @@ function render(d){
     <div class="note warn" style="margin-bottom:0"><b>这份报告的边界：</b>${esc(p.confidence.label)}。它读的是「你让 AI 做了什么」，不是「你在工作里交付了什么」。兴趣与思考方式可以由此判断，绩效不能。</div>
   </div>
 
-  <div class="card">
-    <h2>一、底色轴：十个动作倾向</h2>
-    <p class="small" style="margin-bottom:14px">由委托任务类型与领域频次经占比映射得出，跨用户可比。灰色为证据不足、按未知处理。</p>
+  <nav class="nav7">
+    <a href="#s1">① 证据轴</a><a href="#s2">② 底色轴</a><a href="#s3">③ 岗位排序</a>
+    <a href="#s4">④ 四象限</a><a href="#s5">⑤ 历史人物</a><a href="#s6">⑥ 书籍匹配</a>
+    <a href="#s7">⑦ 扰动校准</a>
+  </nav>
+
+  <section class="card" id="s1">
+    <div class="sec-h"><div class="sec-n">①</div><h2>证据轴</h2></div>
+    <div class="sec-sub">时间线上的行为事实。先看轨迹，再看动作。</div>
+    <h3>轨迹：每月委托量</h3>
+    ${timelineChart(tl)}
+    <div class="grid2" style="margin-top:12px">
+      <div class="note ${tl.gaps && tl.gaps.length ? 'warn' : 'good'}" style="margin:0">
+        <b>连续性：</b>${esc(tl.continuity||'无时间数据')}<br>
+        <span class="small">${esc(tl.trend||'')}</span>
+      </div>
+      <div class="note" style="margin:0">
+        <b>峰值：</b>${tl.peak? `${esc(tl.peak.month)}（${tl.peak.total} 次，主导领域${esc(tl.peak.top_domain||'未识别')}）` : '无'}<br>
+        <span class="small">峰值月的主题最能说明你最近真正在忙什么。</span>
+      </div>
+    </div>
+    <h3 style="margin-top:20px">增益动作清单</h3>
+    <p class="small" style="margin-bottom:4px">反复出现、跨月持续的，才是倾向；一次性的只是好奇。</p>
+    ${eviList(d.evidence.gains, 't', '增益')}
+    <h3 style="margin-top:22px">损耗动作清单</h3>
+    <p class="small" style="margin-bottom:4px">损耗不等于缺点，它标的是你会在哪里被消耗掉。</p>
+    ${eviList(d.evidence.losses, 'r', '损耗') || '<p class="small">本期未检出明显损耗模式。</p>'}
+  </section>
+
+  <section class="card" id="s2">
+    <div class="sec-h"><div class="sec-n">②</div><h2>底色轴</h2></div>
+    <div class="sec-sub">十个稳定动作倾向。由委托任务类型与领域频次经占比映射得出，跨用户可比；灰显为证据不足。</div>
     <div class="radar-wrap">
       ${radar(p.dims, p.dim_labels)}
       <div style="flex:1;min-width:280px">
@@ -292,65 +374,67 @@ function render(d){
           }).join('')}
         </table>
         <p class="small" style="margin-top:10px">最强：${p.top.map(t=>`${esc(t.label)} ${t.score}`).join('　·　')}</p>
+        <p class="small" style="margin-top:4px">最弱：${p.weak.map(t=>`${esc(t.label)} ${t.score}`).join('　·　')}</p>
       </div>
     </div>
-  </div>
+    <div class="note">「未知」不是低分，是这批语料里没有足够证据。宁可留空，不用平均分糊过去——那会让结论看起来比实际可靠。</div>
+  </section>
 
-  <div class="card">
-    <h2>二、证据：你反复做的事，和你反复躲的事</h2>
-    <p class="small" style="margin-bottom:6px">每条都能指回具体样本。增益不等于优点，损耗不等于缺点——它们只说明你会在哪里获得能量、在哪里被消耗。</p>
-    ${gains}
-    ${losses}
-  </div>
+  <section class="card" id="s3">
+    <div class="sec-h"><div class="sec-n">③</div><h2>岗位排序</h2></div>
+    <div class="sec-sub">综合分 = 适配 × ${d.weights.fit} + 社会距离 × ${d.weights.social}。点任一行展开三情景推演。</div>
+    ${roleRows}
+    ${d.preset ? `<div class="note warn"><b>你预设的「${esc(d.preset.name)}」排第 ${d.preset.rank}，${esc(d.preset.quad.label)}。</b>${esc(d.preset.quad.advice)}</div>` : ''}
+  </section>
 
-  <div class="card">
-    <h2>三、双分推演：适配 × 社会距离</h2>
-    <p class="small" style="margin-bottom:12px">纵轴是"合不合手"，横轴是"够不够得着"。点击任一行展开推演。</p>
+  <section class="card" id="s4">
+    <div class="sec-h"><div class="sec-n">④</div><h2>四象限</h2></div>
+    <div class="sec-sub">纵轴合不合手，横轴够不够得着。适配以中位数 ${d.fit_mid} 为界，社会距离以 60 为界。</div>
     ${scatter(d.roles, d.fit_mid)}
     <div class="legend" style="margin:10px 0 16px">
       <span><i style="background:${C.teal}"></i>最优路线</span>　
       <span><i style="background:${C.blue}"></i>高潜力高难度</span>　
       <span><i style="background:${C.amber}"></i>易上手但内耗</span>　
       <span><i style="background:${C.red}"></i>双重劣势</span>
-      <span style="margin-left:10px;color:var(--ink3)">分界线：适配中位数 ${d.fit_mid}／社会距离 60</span>
     </div>
-    ${roleRows}
-  </div>
+    <div class="grid2">${qcards}</div>
+    <div class="note"><b>怎么用这张图：</b>不要只盯总分最高的那个。先看你在哪个象限有最多候选——如果一个都没有，说明你还没进入任何一条路的有效射程，此时的任务是补入口，不是挑方向。</div>
+  </section>
 
-  <div class="card">
-    <h2>四、扰动校准：拖动看结论怎么变</h2>
-    <p class="small">焦虑升高时，人会更依赖"有人带路"的路线；滤镜重时，没有执行证据的方向会被打折。拖动滑块只改变权重，不改变骨架——如果骨架也跟着变，说明它本来就不稳。</p>
-    <div class="slider-row"><label>焦虑程度</label><input type="range" id="s-anx" min="0" max="100" value="${d.disturbance.anxiety}"><span class="val" id="v-anx">${d.disturbance.anxiety}</span></div>
-    <div class="slider-row"><label>滤镜（想象成分）</label><input type="range" id="s-flt" min="0" max="100" value="${d.disturbance.filter}"><span class="val" id="v-flt">${d.disturbance.filter}</span></div>
-    <div class="slider-row"><label>抗压 / 持续力</label><input type="range" id="s-res" min="0" max="100" value="${d.disturbance.resilience}"><span class="val" id="v-res">${d.disturbance.resilience}</span></div>
-    <div id="recalc" style="margin-top:14px"></div>
-  </div>
-
-  <div class="card">
-    <h2>五、历史人物：比的是决策结构，不是性格</h2>
-    <p class="small" style="margin-bottom:12px">匹配依据是「你在同样的约束下会怎么选」，不是"你是哪一型"。每一条都附了不能类比之处——那才是真话。</p>
+  <section class="card" id="s5">
+    <div class="sec-h"><div class="sec-n">⑤</div><h2>历史人物</h2></div>
+    <div class="sec-sub">比的是决策结构，不是性格。每一条都附「不能类比之处」——那才是真话。</div>
     ${figs}
-  </div>
+  </section>
 
-  <div class="card">
-    <h2>六、书籍：按你当前卡住的决策问题来选</h2>
-    <p class="small" style="margin-bottom:10px">不按评分排序。同一本书在"要不要转行"和"怎么谈薪"两个状态下价值完全不同。</p>
-    <h3 style="color:var(--teal);margin-top:12px">现在读</h3>
+  <section class="card" id="s6">
+    <div class="sec-h"><div class="sec-n">⑥</div><h2>书籍匹配</h2></div>
+    <div class="sec-sub">不按评分排序，按"它回答了你当前卡住的哪个决策问题"来选。</div>
+    <h3 style="color:var(--teal);margin-top:8px">现在读</h3>
     ${readNow.map((b,i)=>bookRow(b,i+1,false)).join('') || '<p class="small">暂无命中，当前语料未指向明确的决策问题。</p>'}
     <h3 style="color:var(--ink3);margin-top:18px">现在不必读</h3>
     <p class="small" style="margin-bottom:6px">不是书不好，是时机不对。焦虑期读传记会强化浪漫想象。</p>
     ${readLater.map((b,i)=>bookRow(b,i+1,true)).join('')}
-  </div>
+  </section>
 
-  <div class="card">
-    <h2>七、这份报告不能回答什么</h2>
+  <section class="card" id="s7">
+    <div class="sec-h"><div class="sec-n">⑦</div><h2>扰动校准</h2></div>
+    <div class="sec-sub">拖动看结论怎么变。只调权重，不改骨架——如果骨架也跟着翻，说明它本来就不稳。</div>
+    <div class="slider-row"><label>焦虑程度</label><input type="range" id="s-anx" min="0" max="100" value="${d.disturbance.anxiety}"><span class="val" id="v-anx">${d.disturbance.anxiety}</span></div>
+    <div class="slider-row"><label>滤镜（想象成分）</label><input type="range" id="s-flt" min="0" max="100" value="${d.disturbance.filter}"><span class="val" id="v-flt">${d.disturbance.filter}</span></div>
+    <div class="slider-row"><label>抗压 / 持续力</label><input type="range" id="s-res" min="0" max="100" value="${d.disturbance.resilience}"><span class="val" id="v-res">${d.disturbance.resilience}</span></div>
+    <div id="recalc" style="margin-top:14px"></div>
+  </section>
+
+  <section class="card">
+    <div class="sec-h"><div class="sec-n" style="background:var(--surface2);color:var(--ink3)">附</div><h2>这份报告不能回答什么</h2></div>
+    <div class="sec-sub">放在最后，但重要性高于前面任何一节。</div>
     ${d.boundaries.map(b=>`<div class="note bad" style="margin:10px 0"><b>${esc(b.title)}</b><br>${esc(b.detail)}</div>`).join('')}
     <p class="small" style="margin-top:12px">下一步：若要让结论更稳，选择器能补即时取舍，数据导入器能补跨场景一致性，长期埋点能补注意力信号。三者都做完，这份报告才够格替你做决定——在那之前，它只负责让你看清锁孔的形状。</p>
-  </div>
+  </section>
 
   <footer>奕识 · 三维决策系统　|　本地生成，无数据上传　|　${esc((d.generated_at||'').slice(0,19).replace('T',' '))}</footer>`;
 
-  /* 滑块联动 */
   const recalc = () => {
     const anx = +document.getElementById('s-anx').value;
     const flt = +document.getElementById('s-flt').value;
@@ -366,12 +450,16 @@ function render(d){
       const total = fit*(1-w) + r.social*w;
       return {name:r.name, total:Math.round(total*10)/10, col:QUAD_COLOR[r.quad.key]};
     }).sort((a,b)=>b.total-a.total);
+    const shift = Math.abs(rows[0].total - d.roles[0].total);
     document.getElementById('recalc').innerHTML = `
       <p class="small" style="margin-bottom:8px">当前权重：适配 <b>${(1-w).toFixed(2)}</b> / 社会距离 <b>${w.toFixed(2)}</b>（焦虑每 +20，社会距离权重 +0.024）</p>
-      <table>${rows.map((r,i)=>`<tr><td style="width:28px;color:var(--ink3)">${i+1}</td><td>${esc(r.name)}</td><td style="width:60%;"><div class="bar"><i style="width:${r.total}%;background:${r.col}"></i></div></td><td class="mono" style="text-align:right">${r.total}</td></tr>`).join('')}</table>
-      <p class="small" style="margin-top:8px">结构调整幅度：${Math.abs(rows[0].total - d.roles[0].total) < 0.1 ? '几乎不变——说明第一名的位置不依赖情绪参数' : '有变化——说明当前排序对情绪状态敏感，做决定前最好等状态平稳'}</p>`;
+      <table>${rows.map((r,i)=>`<tr><td style="width:26px;color:var(--ink3)">${i+1}</td><td style="width:30%">${esc(r.name)}</td><td><div class="bar"><i style="width:${r.total}%;background:${r.col}"></i></div></td><td class="mono" style="text-align:right;width:52px">${r.total}</td></tr>`).join('')}</table>
+      <p class="small" style="margin-top:8px">第一名变动：${shift < 0.1 ? '几乎不变——说明它的位置不依赖情绪参数' : '有变化（' + shift.toFixed(1) + ' 分）——说明当前排序对情绪状态敏感，做决定前最好等状态平稳'}</p>`;
   };
-  ['s-anx','s-flt','s-res'].forEach(id=>document.getElementById(id).addEventListener('input', recalc));
+  ['s-anx','s-flt','s-res'].forEach(id=>{
+    const node = document.getElementById(id);
+    if (node && node.addEventListener) node.addEventListener('input', recalc);
+  });
   recalc();
 }
 
