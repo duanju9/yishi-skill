@@ -62,9 +62,9 @@ footer{text-align:center;font-size:11.5px;color:var(--ink3);padding:20px 0 0}
 </div>
 
 <div class="card">
-  <h2><span class="badge b3">版本 D</span>手机版纯提示词（不用装任何东西）</h2>
+  <h2><span class="badge b1">版本 A</span>手机版（不用装任何东西，最省事）</h2>
   <p class="small" style="margin-bottom:4px">对方只有手机、用的是 AI App（Claude / ChatGPT / 豆包等），把这段粘进去。让 agent 自己去盘点它能读到什么。</p>
-  <div class="note"><b>和版本 A 的区别：</b>A 要求 AI 跑脚本；这一版不跑任何脚本，靠 agent 自己读对话、记忆、文档、会议记录。所以规则更严——只给三档判断，不许给分数。</div>
+  <div class="note"><b>和版本 B 的区别：</b>B 要求 AI 跑脚本；这一版不跑任何脚本，靠 agent 自己读对话、记忆、文档、会议记录。所以规则更严——只给三档判断，不许给分数。</div>
   <pre id="p4">你做一次职业方向分析，但不能运行任何脚本，只能用手上能访问到的信息。
 
 第一步：盘点数据源。列出你能读到的关于我的东西——本次对话、长期记忆、
@@ -95,7 +95,7 @@ footer{text-align:center;font-size:11.5px;color:var(--ink3);padding:20px 0 0}
 </div>
 
 <div class="card">
-  <h2><span class="badge b1">版本 A</span>完整提示词（粘给 AI 用）</h2>
+  <h2><span class="badge b2">版本 B</span>电脑版完整提示词（能跑脚本）</h2>
   <p class="small" style="margin-bottom:4px">对方把这段整个复制，粘给能执行命令的 AI，什么都不用改。</p>
   <div class="note warn"><b>前提：</b>对方用的 AI 必须能执行本地命令（Claude Code / Cursor / WorkBuddy / Codex / Codex CLI）。纯网页版 ChatGPT、豆包、Kimi 跑不了——它们读不到本地文件。</div>
   <pre id="p1">帮我做一次职业方向分析，用这个开源工具：
@@ -134,7 +134,7 @@ https://github.com/duanju9/yishi-skill
 </div>
 
 <div class="card">
-  <h2><span class="badge b2">版本 B</span>分享文案（发群 / 朋友圈用）</h2>
+  <h2><span class="badge b3">版本 C</span>分享文案（发群 / 朋友圈用）</h2>
   <p class="small" style="margin-bottom:4px">短，有钩子，不吹。适合直接发出去。</p>
   <pre id="p2">想搞清楚自己该往哪走，别再做测评了——问卷问的是"你觉得自己是什么人"，你填的时候已经在演了。
 
@@ -154,7 +154,7 @@ https://github.com/duanju9/yishi-skill
 </div>
 
 <div class="card">
-  <h2><span class="badge b3">版本 C</span>一句话版本</h2>
+  <h2><span class="badge b1">版本 D</span>一句话版本</h2>
   <p class="small" style="margin-bottom:4px">聊天里随口推荐时用。</p>
   <pre id="p3">发现一个挺狠的开源工具，不问你觉得你是谁，只读你平时让 AI 帮你做什么，然后给你 7 条职业路径排个序，连"哪条好进但会内耗"都标出来。本地跑不上传：https://github.com/duanju9/yishi-skill</pre>
   <div class="row"><button class="btn primary" onclick="cp(this,'p3')">复制一句话</button><span class="small" id="t3"></span></div>
