@@ -1,0 +1,221 @@
+{
+  "version": "1.0.0",
+  "note": "本文件只含通用知识（岗位需求向量、历史人物决策指纹、书籍问题索引），不含任何个人结论。所有分数由用户自己的语料计算得出。",
+  "dimensions": {
+    "analyze": {"label": "拆解分析", "desc": "把复杂对象拆成可验证的结构，找出一层之下的因果与口径"},
+    "build": {"label": "动手建构", "desc": "把想法做成可运行、可交付的东西，而不是停在方案层"},
+    "express": {"label": "表达输出", "desc": "把理解变成别人能读懂的文本、讲法、作品"},
+    "explore": {"label": "信息探究", "desc": "主动搜寻、比对、验证信息，不满足于单一来源"},
+    "decide": {"label": "独立决断", "desc": "在信息不全时自己拍板，并为结果负责"},
+    "connect": {"label": "协调连接", "desc": "推动他人、对齐利益、在关系网络中成事"},
+    "operate": {"label": "秩序执行", "desc": "把流程、细节、重复事务稳定地做完"},
+    "create": {"label": "原创生成", "desc": "从无到有产出新形式、新角度、新方案"},
+    "trade": {"label": "商业交换", "desc": "对成本、收益、定价、成交有本能的敏感"},
+    "focus": {"label": "长期专注", "desc": "在同一件事上持续投入数月以上，不因短期无反馈而转向"}
+  },
+  "roles": [
+    {
+      "id": "research",
+      "name": "产业研究 / 投研",
+      "demand": {"analyze": 95, "build": 25, "express": 55, "explore": 70, "decide": 75, "connect": 35, "operate": 40, "create": 30, "trade": 60, "focus": 90},
+      "work": "读财报与行业数据，建模型，写判断，错了会被市场直接打脸",
+      "cost": "长期独处面对数据；结论无人喝彩；口径错一次要重来",
+      "openness": 66,
+      "entry": "学历与作品双门槛，实习转正是主通道",
+      "cycle": "与市场周期强相关，熊市缩编"
+    },
+    {
+      "id": "content",
+      "name": "财经内容 / 独立研究",
+      "demand": {"analyze": 80, "build": 20, "express": 95, "explore": 65, "decide": 55, "connect": 50, "operate": 45, "create": 75, "trade": 40, "focus": 85},
+      "work": "把一个复杂问题拆到普通人能懂，持续产出，自己承担选题风险",
+      "cost": "收入前期极不稳定；选题失败无人兜底；容易把兴趣做成任务",
+      "openness": 84,
+      "entry": "几乎无门槛，全靠作品说话；冷启动期长",
+      "cycle": "平台算法波动，与个人IP强绑定"
+    },
+    {
+      "id": "product",
+      "name": "产品经理",
+      "demand": {"analyze": 55, "build": 45, "express": 65, "explore": 60, "decide": 80, "connect": 85, "operate": 70, "create": 65, "trade": 50, "focus": 45},
+      "work": "定义做什么不做什么，协调研发设计运营把事推上线，为结果负责但无直接指挥权",
+      "cost": "大部分时间在沟通对齐而非思考；决策常被资源与老板意志覆盖",
+      "openness": 74,
+      "entry": "校招与转岗两条路；转岗需要内部人背书",
+      "cycle": "与融资环境强相关，收缩期先砍"
+    },
+    {
+      "id": "consulting",
+      "name": "管理咨询",
+      "demand": {"analyze": 70, "build": 20, "express": 85, "explore": 70, "decide": 85, "connect": 80, "operate": 60, "create": 45, "trade": 55, "focus": 40},
+      "work": "在极短时间内形成可讲的观点，说服客户，交付结构化报告",
+      "cost": "长期出差与高压；必须快速给出确定性，不能保留不确定性",
+      "openness": 41,
+      "entry": "目标院校 + case 面试硬门槛，圈层壁垒最高",
+      "cycle": "与企业咨询预算同步，波动大"
+    },
+    {
+      "id": "engineering",
+      "name": "技术研发 / AI 应用",
+      "demand": {"analyze": 60, "build": 95, "express": 35, "explore": 70, "decide": 55, "connect": 35, "operate": 55, "create": 60, "trade": 20, "focus": 85},
+      "work": "把方案落成能跑的系统，处理边界、性能与故障",
+      "cost": "长期与细节搏斗；成果常被当作理所当然",
+      "openness": 71,
+      "entry": "作品与项目经历为主，学历影响递减",
+      "cycle": "与产业投入周期相关，AI 方向当前扩张"
+    },
+    {
+      "id": "strategy",
+      "name": "战略 / 商业分析",
+      "demand": {"analyze": 85, "build": 25, "express": 70, "explore": 75, "decide": 85, "connect": 70, "operate": 55, "create": 50, "trade": 65, "focus": 60},
+      "work": "在组织内部做研究，给决策层提供选项与推演",
+      "cost": "研究成果常不被采纳；离业务远，成就感延迟",
+      "openness": 59,
+      "entry": "多由咨询或投研转入，纯校招名额少",
+      "cycle": "依附于公司规模，扩张期才设岗"
+    },
+    {
+      "id": "founder",
+      "name": "独立开发 / 创业",
+      "demand": {"analyze": 60, "build": 70, "express": 65, "explore": 60, "decide": 90, "connect": 65, "operate": 75, "create": 80, "trade": 85, "focus": 70},
+      "work": "自己找方向、做产品、找客户、收钱，所有环节都要过手",
+      "cost": "无稳定收入与反馈；失败成本全自负；孤独",
+      "openness": 75,
+      "entry": "无门槛，但存活门槛极高",
+      "cycle": "完全自负盈亏"
+    }
+  ],
+  "figures": [
+    {
+      "id": "zengguofan",
+      "name": "曾国藩",
+      "era": "晚清",
+      "one_line": "在无法取胜的局面里，用笨办法把可控的部分做到位",
+      "nodes": [
+        {"stage": "京官时期", "constraint": "无实权、无军功，只有文官身份", "options": "循例升迁 / 上书言事得罪人", "gave_up": "安稳的仕途节奏", "kept": "不做违心之事的底线", "cost": "几乎被整个官场排斥"},
+        {"stage": "组建湘军", "constraint": "无兵、无饷、无朝廷信任", "options": "速战求功 / 扎硬寨打呆仗", "gave_up": "快速成名的可能", "kept": "结硬寨、打呆仗的笨功夫", "cost": "屡战屡败，两次投水"},
+        {"stage": "天京之后", "constraint": "功高震主，猜忌将至", "options": "拥兵自重 / 自削兵权", "gave_up": "到手的权势", "kept": "全身而退的判断", "cost": "主动裁撤自己一手带出的队伍"}
+      ],
+      "fit_when": "你在做一件短期没有反馈、只能靠日拱一卒的事；或你的本能是拆解而非速成",
+      "not_comparable": "他的约束来自皇权与宗法体系，你的约束来自市场与组织；他的'笨'是有明确终点的，你的终点可能要自己定义"
+    },
+    {
+      "id": "wangyangming",
+      "name": "王阳明",
+      "era": "明",
+      "one_line": "在既有路径全部失效时，自己重建一套可用的判断标准",
+      "nodes": [
+        {"stage": "格竹失败", "constraint": "朱子学说要求格物穷理，但格不出结果", "options": "继续按师法做 / 承认此路不通", "gave_up": "正统学术路径的安全感", "kept": "对'知'必须能行的要求", "cost": "长期自我怀疑与身体损耗"},
+        {"stage": "龙场悟道", "constraint": "被贬蛮荒，无书无师无同侪", "options": "等赦免 / 就地自建学问", "gave_up": "回到中心的可能性", "kept": "在最差环境里仍要思考的习惯", "cost": "数年被主流遗忘"},
+        {"stage": "平定宸濠", "constraint": "手上无正规军，只有临时募兵", "options": "等朝廷调兵 / 以奇取胜", "gave_up": "按兵部规矩办事的安全", "kept": "就地处断的魄力", "cost": "功成后被诬陷，赏格被削"}
+      ],
+      "fit_when": "你卡在'学历/专业/现有路径都对不上我想做的事'；你倾向自己造方法论而不是套别人的",
+      "not_comparable": "他的'心即理'是在科举体系内被逼出来的反叛，你若没有共同体的压力，容易把'自建体系'变成拒绝学习的借口"
+    },
+    {
+      "id": "zhangjian",
+      "name": "张謇",
+      "era": "清末民初",
+      "one_line": "在最体面的位置上，主动跳进最不体面的实干里",
+      "nodes": [
+        {"stage": "状元及第", "constraint": "已到科举顶点，前路是翰林清贵", "options": "做官 / 回乡办实业", "gave_up": "士大夫的身份与体面", "kept": "对'实业救国'的判断", "cost": "被同僚视为自降身份"},
+        {"stage": "创办大生纱厂", "constraint": "无工业经验、无技术人才、无资本积累", "options": "官督商办求稳 / 完全商办自担风险", "gave_up": "官方的兜底", "kept": "不让官股干预经营", "cost": "四处借债，几度濒临破产"},
+        {"stage": "南通建设", "constraint": "单一企业无法支撑完整社会", "options": "只做赚钱的纱厂 / 办学校医院城建", "gave_up": "短期利润率", "kept": "企业与社会共生的想法", "cost": "资金链长期紧绷，晚年企业易手"}
+      ],
+      "fit_when": "你想从'分析别人'转向'自己下场做'；你手上有一个体面但让你空转的位置",
+      "not_comparable": "他有一个明确的地域共同体（南通）可以承载抱负，你的'南通'在哪里需要先想清楚，否则容易变成一个人的宏大叙事"
+    },
+    {
+      "id": "sushi",
+      "name": "苏轼",
+      "era": "北宋",
+      "one_line": "在被剥夺意义的位置上，重新造出意义",
+      "nodes": [
+        {"stage": "乌台诗案", "constraint": "文字获罪，生死未卜", "options": "辨白求免 / 认罪保命", "gave_up": "政治前途", "kept": "不诬陷他人的底线", "cost": "贬谪黄州，几乎断绝仕途"},
+        {"stage": "黄州躬耕", "constraint": "无权无俸，需自己种地养活家人", "options": "闭门哀叹 / 就地生活", "kept": "在具体生活里找滋味的能力", "gave_up": "士大夫的优越感", "cost": "长期贫困与身份落差"},
+        {"stage": "惠州儋州", "constraint": "一贬再贬，流放海南", "options": "等死 / 教书办学写诗", "gave_up": "回朝的期待", "kept": "把荒地变成可居之处的习惯", "cost": "晚年颠沛，客死归途"}
+      ],
+      "fit_when": "你正处在'努力了但没有结果'的阶段，需要重建意义而不是换赛道",
+      "not_comparable": "他的豁达有极强的天赋与文学出口做支撑，普通人模仿'想开点'容易变成对现实问题的回避"
+    },
+    {
+      "id": "munger",
+      "name": "查理·芒格",
+      "era": "20-21世纪",
+      "one_line": "用多学科模型和逆向思考，避开明显会输的地方",
+      "nodes": [
+        {"stage": "早年丧子与破产", "constraint": "三十岁前后失去孩子、婚姻破裂、财务归零", "options": "回到法律本行求稳 / 转向投资", "gave_up": "确定性的职业路径", "kept": "要自己掌控结果的意志", "cost": "数年高压与不确定"},
+        {"stage": "放弃律师执业", "constraint": "律师按小时收费，无法积累复利", "options": "继续做合伙人 / 转做投资", "gave_up": "已建立的专业声望", "kept": "对复利结构的判断", "cost": "放弃稳定现金流"},
+        {"stage": "与巴菲特搭档", "constraint": "两人方法不同，需要长期协作", "options": "各自为战 / 建立共同语言", "gave_up": "独立署名的成就感", "kept": "把判断标准说清楚的习惯", "cost": "长期居于二把手位置"}
+      ],
+      "fit_when": "你擅长拆解与交叉验证，但容易因为信息过载而迟迟不动手",
+      "not_comparable": "他有几十年可等待的资本与极好的搭档，你的试错窗口和容错空间远小于他；'逆向思考'不能替代'先上场'"
+    },
+    {
+      "id": "taleb",
+      "name": "纳西姆·塔勒布",
+      "era": "当代",
+      "one_line": "用杠铃结构承担可控的小风险，避开不可逆的大风险",
+      "nodes": [
+        {"stage": "交易所交易员", "constraint": "市场大部分时间平淡，尾部事件决定生死", "options": "赚稳定的钱 / 押注尾部", "gave_up": "平稳的年度收益", "kept": "对不可逆损失的警惕", "cost": "长期承受'看起来在犯错'的压力"},
+        {"stage": "离开主流金融", "constraint": "主流叙事与他的风险观冲突", "options": "留在体系内 / 独立写作研究", "gave_up": "机构身份与稳定收入", "kept": "不迎合听众的表达方式", "cost": "被学界长期排斥"},
+        {"stage": "写《黑天鹅》", "constraint": "专业读者不接受非学院表达", "options": "写规范学术 / 写随笔体", "gave_up": "学术认可", "kept": "让普通人能读懂", "cost": "被指为不严谨"}
+      ],
+      "fit_when": "你在'稳定但无成长'与'高波动但可能跃迁'之间摇摆，需要一套分配风险的框架",
+      "not_comparable": "他的杠铃策略依赖可承受的资本与极强的心理耐受，若你的现金流没有安全垫，尾部押注会直接变成生存问题"
+    },
+    {
+      "id": "duanyongping",
+      "name": "段永平",
+      "era": "当代",
+      "one_line": "用'不做不对的事'划定边界，剩下的事反而变简单",
+      "nodes": [
+        {"stage": "接手亏损电子厂", "constraint": "厂子负债、产品无优势", "options": "做贴牌代工求活 / 自建品牌", "gave_up": "短期订单", "kept": "不做低质低价的产品", "cost": "前期亏损扩大"},
+        {"stage": "步步高扩张", "constraint": "多品类机会与资源有限", "options": "全面铺开 / 专注少数品类", "gave_up": "规模速度", "kept": "本分与聚焦", "cost": "错过部分风口"},
+        {"stage": "转向投资", "constraint": "从经营到投资的角色转换", "options": "频繁交易 / 极少出手", "gave_up": "市场热度带来的机会", "kept": "只投看得懂的生意", "cost": "长期被认为'什么都不做'"}
+      ],
+      "fit_when": "你有很多想做的方向，缺的是排除法而不是加法",
+      "not_comparable": "他的'不做'建立在已经做成过事情的安全感上，你如果还没赢过一次，'不做'可能只是拖延的借口"
+    },
+    {
+      "id": "feynman",
+      "name": "理查德·费曼",
+      "era": "20世纪",
+      "one_line": "用'能不能讲给外行听懂'检验自己是否真的懂",
+      "nodes": [
+        {"stage": "研究生选方向", "constraint": "普林斯顿有更体面的课题", "options": "跟随主流课题 / 做自己好奇的问题", "gave_up": "学术声望的捷径", "kept": "只做让自己兴奋的问题", "cost": "一度被认为不严肃"},
+        {"stage": "挑战者号调查", "constraint": "委员会倾向走过场", "options": "随大流结案 / 公开做冰水实验", "gave_up": "体制内的舒适位置", "kept": "用可验证事实说话", "cost": "与权力机构交恶"},
+        {"stage": "拒绝高薪职位", "constraint": "多家机构开出高薪与名誉", "options": "接受职位 / 留在讲台与黑板前", "gave_up": "收入与社会地位", "kept": "教学与思考的自由", "cost": "长期被视为古怪"}
+      ],
+      "fit_when": "你学了很多但说不清楚；或你的理解停在术语层，需要一次'讲给外行'的检验",
+      "not_comparable": "他的直觉与数学天赋无法复制，'用教来学'对普通人是有效方法，但不要期待同样的顿悟速度"
+    },
+    {
+      "id": "simaqian",
+      "name": "司马迁",
+      "era": "西汉",
+      "one_line": "用一件需要几十年的事，压过当下的羞辱",
+      "nodes": [
+        {"stage": "承父遗命", "constraint": "父亲未完成的史书，需要他接手", "options": "专心仕途 / 承担著作", "gave_up": "更快的升迁", "kept": "对父亲的承诺", "cost": "长期背负一项看不到尽头的工作"},
+        {"stage": "李陵之祸", "constraint": "为李陵辩护触怒汉武帝，面临死刑或宫刑", "options": "赴死保全名节 / 受刑活下去完成书", "gave_up": "士人的尊严与身体完整", "kept": "书必须写完", "cost": "终身耻辱，被同侪轻视"},
+        {"stage": "成书之后", "constraint": "书成但不敢公开", "options": "献于朝廷求名 / 藏之名山", "gave_up": "生前的认可", "kept": "留给后世", "cost": "生前几乎无人知晓"}
+      ],
+      "fit_when": "你正在做一件需要几年才有结果的事，中间不断怀疑值不值",
+      "not_comparable": "他面对的是生死与尊严的极端选择，日常的'坚持一下'不能类比；不要用他的悲壮为普通的拖延赋予意义"
+    }
+  ],
+  "books": [
+    {"id": "poor-charlies", "title": "穷查理宝典", "author": "查理·芒格", "question": "如何用少数几个可靠的思维模型替代大量零散知识？", "answers": "在信息过载、判断反复摇摆时", "read_now_when": ["explore", "analyze"], "skip_when": "你已经在过度分析、需要动手时，这本书会让你更倾向于再想一层", "why": "给拆解型的人一套收敛框架，而不是更多素材"},
+    {"id": "antifragile", "title": "反脆弱", "author": "塔勒布", "question": "如何在不可预测的环境里，让波动成为收益来源？", "answers": "在'稳定但无成长'与'高波动'之间摇摆时", "read_now_when": ["trade", "decide"], "skip_when": "你现金流没有安全垫时，杠铃策略会变成赌博的理由", "why": "给风险偏好一个结构，而不是一句'要勇敢'"},
+    {"id": "thinking-fast-slow", "title": "思考，快与慢", "author": "卡尼曼", "question": "我的直觉在哪些场合系统性出错？", "answers": "在反复做同类判断却总差一点时", "read_now_when": ["analyze"], "skip_when": "你正在焦虑期，这本书会让你对所有判断产生怀疑", "why": "把'我判断力不行'变成'我在哪类判断上不行'"},
+    {"id": "so-good", "title": "基业长青 / 从优秀到卓越", "author": "柯林斯", "question": "什么样的组织能穿越周期？", "answers": "在评估一家公司该不该去、该不该投时", "read_now_when": ["analyze", "trade"], "skip_when": "你想找个人职业答案时，组织规律不能直接映射到个人", "why": "研究公司时的基础框架，但对个人选择作用有限"},
+    {"id": "meditations", "title": "沉思录", "author": "马可·奥勒留", "question": "在无法改变处境时，如何保持行动能力？", "answers": "在被外部评价反复干扰时", "read_now_when": ["focus"], "skip_when": "你真正需要的是换赛道而不是调整心态", "why": "斯多葛的边界划分：哪些是我的，哪些不是"},
+    {"id": "simaqian-book", "title": "史记（选读）", "author": "司马迁", "question": "人在极端约束下如何选择，代价是什么？", "answers": "在纠结'要不要为一个长期目标付出代价'时", "read_now_when": ["focus", "decide"], "skip_when": "你处于低谷期，读列传容易把悲情当成意义", "why": "看具体的人在具体约束下的取舍，而不是抽象励志"},
+    {"id": "zeng-guofan-zhuan", "title": "曾国藩（传记）", "author": "多种版本", "question": "没有天赋优势的人，靠什么把事做成？", "answers": "在短期看不到反馈、想放弃时", "read_now_when": ["focus", "operate"], "skip_when": "你想找'如何快速成功'时，这本书恰好相反", "why": "笨功夫的可操作性，而非天赋叙事"},
+    {"id": "poor-economics", "title": "贫穷的本质", "author": "班纳吉 / 迪弗洛", "question": "为什么好的意愿常常产生坏的结果？", "answers": "在想做'有意义的事'但不确定方法时", "read_now_when": ["analyze", "connect"], "skip_when": "你需要立刻做个人决策时，这本书偏宏观", "why": "训练'看真实约束'而不是'看正确口号'"},
+    {"id": "show-your-work", "title": "Show Your Work", "author": "Austin Kleon", "question": "如何让别人看到我在做什么，而不显得自吹？", "answers": "在需要建立个人可见度时", "read_now_when": ["express", "create"], "skip_when": "你还没开始做任何事，先产出再谈展示", "why": "给'只会做不会说'的人一条低成本路径"},
+    {"id": "art-of-doing", "title": "Doing Good Better", "author": "Will MacAskill", "question": "如何用有限的时间和能力产生最大影响？", "answers": "在多个'有意义的方向'之间选择时", "read_now_when": ["decide", "trade"], "skip_when": "你连基本方向都没定，先做排除法", "why": "把'我想做点有意义的事'变成可比较的选项"},
+    {"id": "deep-work", "title": "深度工作", "author": "Cal Newport", "question": "如何在被打断的环境里保留长时间思考？", "answers": "在感觉忙碌但没产出时", "read_now_when": ["focus", "analyze"], "skip_when": "你的问题是没有输入而非没有专注", "why": "拆解型的人最容易被碎片沟通耗尽"},
+    {"id": "range", "title": "跨能致胜", "author": "David Epstein", "question": "晚起步、跨领域的人靠什么赢？", "answers": "在担心'我起步太晚/专业不对口'时", "read_now_when": ["explore", "create"], "skip_when": "你在用'跨界'逃避在一个领域扎根", "why": "给非直线路径一个证据基础，但不是不深耕的借口"}
+  ]
+}
