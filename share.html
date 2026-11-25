@@ -56,7 +56,42 @@ footer{text-align:center;font-size:11.5px;color:var(--ink3);padding:20px 0 0}
   <p class="small" style="margin-top:6px">把一个开源工具发给别人，让对方两分钟得到一份自己的职业决策报告。所有内容本地运行，数据不上传。</p>
   <div class="row" style="margin-top:12px">
     <a href="https://github.com/duanju9/yishi-skill" target="_blank"><button class="btn primary">打开 GitHub 仓库</button></a>
+    <a href="https://duanju9.github.io/yishi-skill/" target="_blank"><button class="btn">手机上直接打开</button></a>
   </div>
+  <p class="small" style="margin-top:10px">收件人没有电脑也行——第二个按钮是纯网页版，手机浏览器点开答 18 题就出报告。</p>
+</div>
+
+<div class="card">
+  <h2><span class="badge b3">版本 D</span>手机版纯提示词（不用装任何东西）</h2>
+  <p class="small" style="margin-bottom:4px">对方只有手机、用的是 AI App（Claude / ChatGPT / 豆包等），把这段粘进去。让 agent 自己去盘点它能读到什么。</p>
+  <div class="note"><b>和版本 A 的区别：</b>A 要求 AI 跑脚本；这一版不跑任何脚本，靠 agent 自己读对话、记忆、文档、会议记录。所以规则更严——只给三档判断，不许给分数。</div>
+  <pre id="p4">你做一次职业方向分析，但不能运行任何脚本，只能用手上能访问到的信息。
+
+第一步：盘点数据源。列出你能读到的关于我的东西——本次对话、长期记忆、
+文档笔记、邮件、会议记录与转录——逐条标来源和时间范围。拿不到的直说。
+
+第二步：等我确认再继续。
+
+第三步：只从"我做过的事"里取证据。不要用我的自我描述（"我觉得我适合X"），
+只找我实际提的请求、做的动作、反复纠结的问题。每条引用原话并标时间。
+
+第四步：十个维度（拆解/建构/表达/探究/决断/协调/秩序/创造/交易/专注）
+只给四档：高 / 中 / 低 / 无证据。不要给 0-100 分数，你无法精确。
+每条判断必须挂一条原话证据，没有就写"无证据"。
+
+第五步：七条路径（投研/内容/产品/咨询/技术/战略/创业）各给：
+适配高中低 + 理由、社会距离近中远 + 依据、四象限归属、长期隐性消耗。最后排序。
+
+第六步：按七节输出——①证据 ②底色 ③岗位排序 ④四象限（文字说明，不画图）
+⑤历史人物（比决策结构，每位写"不能类比之处"）⑥书籍（现在读3本+现在别读2本）
+⑦校准（我的焦虑/滤镜/抗压怎么影响结论）
+
+硬性规则：
+· 任何结论必须能指回具体证据，指不回去的删掉
+· 不许编造我说过的话
+· 数据不足就明说"样本不足"，不要用漂亮话掩盖
+· 只回答"合不合手、够不够得着"，不回答"我该选哪个"</pre>
+  <div class="row"><button class="btn primary" onclick="cp(this,'p4')">复制手机版提示词</button><span class="small" id="t4"></span></div>
 </div>
 
 <div class="card">
